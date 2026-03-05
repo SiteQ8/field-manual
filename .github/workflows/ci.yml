@@ -1,0 +1,116 @@
+name: CI — ShellCheck & Compatibility Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  shellcheck:
+    name: ShellCheck Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck on all scripts
+        run: |
+          find . -name "*.sh" -not -path "./.git/*" | \
+            xargs shellcheck --severity=warning \
+            --exclude=SC1090,SC1091,SC2034,SC2148
+
+  syntax-check:
+    name: Bash Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check bash syntax on all scripts
+        run: |
+          errors=0
+          while IFS= read -r script; do
+            if ! bash -n "$script" 2>&1; then
+              echo "SYNTAX ERROR: $script"
+              errors=$((errors + 1))
+            fi
+          done < <(find . -name "*.sh" -not -path "./.git/*")
+          [ $errors -eq 0 ] && echo "✅ All scripts passed syntax check"
+          exit $errors
+
+  dependency-check:
+    name: Dependency Availability
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dialog
+        run: sudo apt-get install -y dialog
+
+      - name: Verify dialog works
+        run: dialog --version
+
+      - name: Check for optional clipboard tools
+        run: |
+          apt-cache show xclip  && echo "xclip available"  || true
+          apt-cache show xsel   && echo "xsel available"   || true
+
+  structure-check:
+    name: File Structure Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify required files exist
+        run: |
+          required_files=(
+            "field-manual.sh"
+            "install.sh"
+            "lib/colors.sh"
+            "lib/ui.sh"
+            "lib/search.sh"
+            "modules/blue/menu.sh"
+            "modules/blue/identify.sh"
+            "modules/blue/protect.sh"
+            "modules/blue/detect.sh"
+            "modules/blue/respond.sh"
+            "modules/blue/recover.sh"
+            "modules/blue/forensics.sh"
+            "modules/blue/os_cheats.sh"
+            "modules/blue/event_ids.sh"
+            "modules/blue/quick_ref.sh"
+            "modules/blue/blue.dat"
+            "modules/red/menu.sh"
+            "modules/red/osint.sh"
+            "modules/red/windows.sh"
+            "modules/red/linux.sh"
+            "modules/red/macos.sh"
+            "modules/red/ports.sh"
+            "modules/red/exploit.sh"
+            "modules/red/postex.sh"
+            "modules/red/creds.sh"
+            "modules/red/tunneling.sh"
+            "modules/red/scripting.sh"
+            "modules/red/tips.sh"
+            "modules/red/red.dat"
+          )
+          missing=0
+          for f in "${required_files[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              missing=$((missing + 1))
+            else
+              echo "✓ $f"
+            fi
+          done
+          [ $missing -eq 0 ] && echo "✅ All required files present"
+          exit $missing
+
+      - name: Check executable permissions
+        run: |
+          [ -x field-manual.sh ] || { echo "field-manual.sh not executable"; exit 1; }
+          [ -x install.sh ]      || { echo "install.sh not executable"; exit 1; }
+          echo "✅ Executable permissions OK"

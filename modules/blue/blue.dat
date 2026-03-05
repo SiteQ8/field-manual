@@ -1,0 +1,147 @@
+blue|NMAP - Ping Sweep|nmap -sn -PE <IP_RANGE>
+blue|NMAP - Open Ports|nmap --open <IP_RANGE>
+blue|NMAP - Service Version|nmap -sV <IP>
+blue|NMAP - TCP+UDP Scan|nmap -v -Pn -sU -sT -p U:53,111,137,T:21-25,80,139,8080 <IP>
+blue|NMAP - Aggressive|nmap -A -T4 <IP_RANGE>
+blue|NMAP - Vuln Scripts|nmap --script=vuln <IP>
+blue|NMAP - OS Detection|nmap -O -sV <IP>
+blue|Nessus - Batch Scan|nessus -q -x -T html <SERVER> <PORT> <USER> <PASS> targets.txt out.html
+blue|OpenVAS - Update DB|openvas-nvt-sync
+blue|OpenVAS - Run Scan|openvas-client -q 127.0.0.1 9390 sysadm nsrc+ws scanme.txt out.txt -T txt -V -x
+blue|Windows - Net View|net view /all
+blue|Windows - Ping Sweep|for /L %I in (1,1,254) do ping -w 30 -n 1 192.168.1.%I | find "Reply" >> out.txt
+blue|Windows - DHCP Logging|reg add HKLM\System\CurrentControlSet\Services\DhcpServer\Parameters /v ActivityLogFlag /t REG_DWORD /d 1
+blue|Windows - DNS Logging|DNSCmd <SERVER> /config /logLevel 0x8100F331
+blue|Windows - Hash File (FCIV)|fciv.exe <FILE>
+blue|Windows - Hash File (PS)|Get-FileHash -Algorithm SHA256 <FILE>
+blue|Windows - Hash File (certutil)|certutil -hashfile <FILE> SHA256
+blue|Windows - NetBIOS Scan|nbtstat -A <IP>
+blue|Windows - NetBIOS Loop|for /L %I in (1,1,254) do nbtstat -An 192.168.1.%I
+blue|Windows - User Activity (PSLoggedOn)|psloggedon \\computername
+blue|Windows - MBSA Scan|mbsacli.exe /target <IP> /n os+iis+sql+password
+blue|Windows - Netdom Query DC|netdom query DC
+blue|Windows - Netdom Query Trust|netdom query TRUST
+blue|Windows - DSQUERY Computers|dsquery COMPUTER "OU=servers,DC=<DOMAIN>,DC=<EXT>" -o rdn
+blue|Linux - SMB Tree Scan|smbtree -b
+blue|Linux - Ping Sweep|for ip in $(seq 1 254); do ping -c 1 192.168.1.$ip>/dev/null; [ $? -eq 0 ] && echo "192.168.1.$ip UP"; done
+blue|Linux - NetBIOS Scan|nbtscan <IP_RANGE>
+blue|Linux - DNS Logging|rndc querylog
+blue|Linux - Hash All Files|find /<PATH> -type f -exec md5sum {} >> md5sums.txt \;
+blue|Linux - SMB Password Check|while read u; do while read p; do smbclient -L <TARGET> -U $u%$p; done<pass.txt; done<users.txt
+blue|Firewall - IPTables Save|iptables-save > firewall.out
+blue|Firewall - IPTables Restore|iptables-restore < firewall.out
+blue|Firewall - IPTables Block IP|iptables -A INPUT -s 10.10.10.10 -j DROP
+blue|Firewall - IPTables Block Subnet|iptables -A INPUT -s 10.10.10.0/24 -j DROP
+blue|Firewall - IPTables Lockdown|iptables -P INPUT DROP && iptables -P OUTPUT DROP && iptables -P FORWARD DROP
+blue|Firewall - IPTables Log Denied|iptables -I INPUT 5 -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
+blue|Firewall - IPTables List|iptables -L -v -n --line-numbers
+blue|Firewall - IPTables Flush|iptables -F
+blue|Firewall - UFW Enable|ufw enable
+blue|Firewall - UFW Status|ufw status verbose
+blue|Firewall - UFW Allow SSH|ufw allow all ssh
+blue|Firewall - UFW Backup|cp /lib/ufw/{user.rules,user6.rules} ./backup/
+blue|Firewall - Windows Show Rules|netsh advfirewall firewall show rule name=all
+blue|Firewall - Windows Enable|netsh advfirewall set currentprofile state on
+blue|Firewall - Windows Block Policy|netsh advfirewall set currentprofile firewallpolicy blockinboundalways,allowoutbound
+blue|Firewall - Windows Add Rule|netsh advfirewall firewall add rule name="App" dir=in action=allow program="C:\App.exe" enable=yes
+blue|Firewall - Windows View Log|Get-Content $env:systemroot\system32\LogFiles\Firewall\pfirewall.log
+blue|Passwords - Windows Change|net user <USER> <NEWPASS>
+blue|Passwords - Linux Change|passwd <USER>
+blue|Passwords - NTLM Only (reg)|reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v lmcompatibilitylevel /t REG_DWORD /d 5 /f
+blue|Passwords - Restrict Anonymous|reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v restrictanonymous /t REG_DWORD /d 1 /f
+blue|Passwords - Disable LMHash|reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /f /v NoLMHash /t REG_DWORD /d 1
+blue|Registry - Disable Admin Shares|reg add HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters /f /v AutoShareWks /t REG_DWORD /d 0
+blue|Registry - Disable IPv6|reg add HKLM\SYSTEM\CurrentControlSet\services\TCPIP6\Parameters /v DisabledComponents /t REG_DWORD /d 255 /f
+blue|Registry - Require UAC|reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 1 /f
+blue|Registry - Disable RDP Cred Cache|reg add HKLM\System\CurrentControlSet\Control\Lsa /v DisableRestrictedAdmin /t REG_DWORD /d 0 /f
+blue|Audit - Check Policy|auditpol /get /category:*
+blue|Audit - Enable All|auditpol /set /category:* /success:enable /failure:enable
+blue|Audit - Enable Logon|auditpol /set /subcategory:"Logon" /success:enable /failure:enable
+blue|Audit - Enable Process|auditpol /set /subcategory:"Process Creation" /success:enable /failure:enable
+blue|Audit - Increase Log Size|reg add HKLM\Software\Policies\Microsoft\Windows\Eventlog\Security /v MaxSize /t REG_DWORD /d 0x64000
+blue|Audit - Check Security Log|wevtutil gl Security
+blue|Audit - PS Get Events|Get-Eventlog Security | ? { $_.Eventid -eq 4624 }
+blue|Audit - PS Last 14 Days Logon|Get-Eventlog Security 4768,4771,4772,4769,4770,4778,4779,4800,4801 -after ((get-date).addDays(-14))
+blue|TCPDump - View ASCII|tcpdump -A
+blue|TCPDump - View HEX|tcpdump -X
+blue|TCPDump - Verbose Timestamps|tcpdump -tttt -n -vv
+blue|TCPDump - Top Talkers|tcpdump -nn -c 1000 | awk '{print $3}' | cut -d. -f1-4 | sort | uniq -c | sort -nr
+blue|TCPDump - Capture to File|tcpdump -w capture.pcap -i any dst <IP> and port 80
+blue|TCPDump - Two Hosts|tcpdump host 10.0.0.1 && host 10.0.0.2
+blue|TCPDump - Clear Text Passwords|tcpdump -n -A -s0 port http or port ftp or port smtp | egrep -i 'pass=|pwd=|user='
+blue|TCPDump - Save to Remote|tcpdump -w - | ssh <REMOTE> -p 50005 "cat - > /tmp/capture.pcap"
+blue|TCPDump - Suspicious SSL|tcpdump -s 1500 -A '(tcp[((tcp[12:1] & 0xf0) >> 2)+5:1] = 0x01)'
+blue|TShark - List Interfaces|tshark -D
+blue|TShark - Save PCAP|tshark -nn -w capture.pcap
+blue|TShark - DNS Queries|tshark -n -e ip.src -e dns.qry.name -E separator=';' -T fields port 53
+blue|TShark - HTTP Requests|tshark -R http.request -T fields -E separator=';' -e http.host -e http.request.uri
+blue|TShark - Top Talkers|tshark -n -c 150 | awk '{print $4}' | sort | uniq -c | sort -nr
+blue|Snort - Test Config|snort -T -c /etc/snort/snort.conf
+blue|Snort - Run on Log File|snort -dv -r logfile.log
+blue|Snort - Console Output|snort -q -A console -i eth0 -c /etc/snort/snort.conf
+blue|Snort - Create Rule|echo 'alert tcp any any -> any 80 (msg:"HTTP"; sid:9001; rev:1;)' > rule.snort
+blue|SSL - Get Certificate|openssl s_client -connect <HOST>:443 </dev/null 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > cert.pem
+blue|SSL - Examine Certificate|openssl x509 -text -in cert.pem
+blue|SSL - Verify Certificate|openssl verify cert.pem
+blue|SSL - Check Expiry|echo | openssl s_client -connect <HOST>:443 2>/dev/null | openssl x509 -noout -dates
+blue|Honeypot - Linux Honey Port|while [ 1 ]; do IP=$(nc -v -l -p 2222 2>&1|grep from|cut -d[ -f3|cut -d] -f1); iptables -A INPUT -p tcp -s ${IP} -j DROP; done
+blue|AppLocker - Import Module|Import-Module AppLocker
+blue|AppLocker - Get Policy|Get-AppLockerPolicy -Local -Xml | Out-GridView
+blue|AppLocker - File Info|Get-ApplockerFileInformation -Directory C:\Windows\System32\ -Recurse -FileType Exe,Script
+blue|IPSEC - Linux Allow|iptables -A INPUT -p esp -j ACCEPT && iptables -A INPUT -p udp --dport 500 -j ACCEPT
+blue|IPSEC - Windows Create Policy|netsh ipsec static add policy name=MyIPsecPolicy assign=yes
+blue|Hosts File - Block Domain (Win)|echo 127.0.0.1 <BAD_DOMAIN> >> C:\Windows\System32\drivers\etc\hosts
+blue|Hosts File - Block Domain (Linux)|echo 127.0.0.1 <BAD_DOMAIN> >> /etc/hosts
+blue|DNS Cache Flush (Ubuntu)|/etc/init.d/dns-clean start
+blue|DNS Cache Flush (nscd)|service nscd restart
+blue|Windows EventLog - Increase Size|reg add HKLM\Software\Policies\Microsoft\Windows\Eventlog\Security /v MaxSize /t REG_DWORD /d 0x64000
+blue|Windows EventLog - Query Failed Logon|wevtutil qe Security /q:"*[System[(EventID=4625)]]" /f:text
+blue|Windows EventLog - Show Remote Log|Show-Eventlog -computername <SERVER>
+blue|Linux Auth Log - Failed SSH|grep "Failed password" /var/log/auth.log
+blue|Linux Auth Log - Successful SSH|grep "Accepted password\|Accepted publickey" /var/log/auth.log
+blue|Linux Auditd - Watch Passwd|auditctl -w /etc/passwd -p wa -k passwd_changes
+blue|Linux Auditd - Watch Sudoers|auditctl -w /etc/sudoers -p wa -k sudoers
+blue|Linux Auditd - Search Events|ausearch -k passwd_changes
+blue|Linux Auditd - Auth Report|aureport -au
+blue|IR - Windows Running Processes|tasklist /v
+blue|IR - Windows Network Connections|netstat -naob
+blue|IR - Windows Scheduled Tasks|schtasks /query /fo LIST /v
+blue|IR - Windows Registry Autoruns|reg query HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+blue|IR - Windows Recent Files|Get-ChildItem C:\Users -Recurse -Force | Sort LastWriteTime -Desc | Select -first 50
+blue|IR - Linux Process Tree|ps auxf
+blue|IR - Linux Network Connections|ss -natp
+blue|IR - Linux Crontabs|crontab -l && cat /etc/crontab
+blue|IR - Linux SUID Binaries|find / -perm -4000 -type f 2>/dev/null
+blue|IR - Linux Bash History|cat ~/.bash_history
+blue|IR - Linux Open Files by PID|lsof -p <PID>
+blue|IR - Disk Image|dd if=/dev/sda of=disk.dd bs=4M
+blue|IR - Hash Evidence|sha256sum disk.dd > disk.dd.sha256
+blue|IR - Export Windows Logs|wevtutil epl Security security.evtx
+blue|Volatility - Identify Profile|volatility -f memory.raw imageinfo
+blue|Volatility - Process List|volatility -f memory.raw --profile=<PROFILE> pslist
+blue|Volatility - Network Scan|volatility -f memory.raw --profile=<PROFILE> netscan
+blue|Volatility - Command History|volatility -f memory.raw --profile=<PROFILE> cmdscan
+blue|Volatility - Dump Process|volatility -f memory.raw --profile=<PROFILE> procdump -p <PID> -D ./dumps/
+blue|Volatility - Malfind|volatility -f memory.raw --profile=<PROFILE> malfind
+blue|Volatility3 - Process List|vol -f memory.raw windows.pslist
+blue|Volatility3 - Netscan|vol -f memory.raw windows.netscan
+blue|Volatility3 - Malfind|vol -f memory.raw windows.malfind
+blue|Disk Forensics - Mount Image|mount -o ro,loop disk.dd /mnt/image
+blue|Disk Forensics - Partition Layout|mmls disk.dd
+blue|Disk Forensics - File Listing|fls -r disk.dd
+blue|Disk Forensics - Recover Deleted|tsk_recover -e disk.dd /mnt/recovered/
+blue|Disk Forensics - VSS List|vssadmin list shadows
+blue|Disk Forensics - Stat File|stat <FILE>
+blue|File Carving - Foremost|foremost -t all -i disk.dd -o ./carved/
+blue|File Carving - Binwalk|binwalk -e <FILE>
+blue|File Carving - Strings|strings -n 8 <FILE>
+blue|Windows - Disable Services|sc config "<SERVICE>" start= disabled && sc stop "<SERVICE>"
+blue|Windows - GPUpdate|gpupdate /force
+blue|Windows - Quarantine AD User|dsadd OU <QUARANTINE_OU>
+blue|Windows - Disable User|net user <USERNAME> /active:no
+blue|Linux - Disable User|usermod -L <USERNAME>
+blue|Windows - SFC Scan|sfc /scannow
+blue|Windows - DISM Repair|DISM /Online /Cleanup-Image /RestoreHealth
+blue|Windows - Reset Firewall|netsh advfirewall reset
+blue|Linux - Fix Packages|apt-get -f install && dpkg --configure -a
+blue|Linux - Restore IPTables|iptables-restore < /etc/iptables/rules.v4

