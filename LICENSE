@@ -1,0 +1,36 @@
+MIT License
+
+Copyright (c) 2024 Ali AlEnezi
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+CONTENT NOTICE:
+This tool is an interactive wrapper and reference interface built around
+content from the following books:
+
+- "Blue Team Field Manual (BTFM)" by Alan White & Ben Clark
+- "Red Team Field Manual v2 (RTFM)" by Ben Clark & Nick Downer
+
+All commands, techniques, and reference material are sourced from these
+publications and used here for educational purposes only. The original authors
+retain all rights to their respective works.
+
+FOR EDUCATIONAL AND AUTHORIZED TESTING USE ONLY.

