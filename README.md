@@ -9,9 +9,9 @@
 ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝     ╚═╝
 ```
 
-# ⚡ Field Manual TUI
+# Field Manual TUI
 
-**Red & Blue Team Field Manual — Interactive Terminal Reference**
+**Red & Blue Team Field Manual, Interactive Terminal Reference**
 
 [![CI](https://github.com/SiteQ8/field-manual/actions/workflows/ci.yml/badge.svg)](https://github.com/SiteQ8/field-manual/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -19,13 +19,13 @@
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-lightgrey)](https://github.com/SiteQ8/field-manual)
 [![Stars](https://img.shields.io/github/stars/SiteQ8/field-manual?style=social)](https://github.com/SiteQ8/field-manual)
 
-*A fully interactive bash TUI built from the **SiteQ8 Blue Team Tools** and **SiteQ8 Red Team Tools** — every command at your fingertips, offline, zero dependencies beyond bash + dialog.*
+*A fully interactive bash TUI built from the **SiteQ8 Blue Team Tools** and **SiteQ8 Red Team Tools**, every command at your fingertips, offline, zero dependencies beyond bash + dialog.*
 
 </div>
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 <div align="center">
 
@@ -45,7 +45,7 @@
 
 ---
 
-## 🚀 Quick Install
+## Quick Install
 
 ```bash
 git clone https://github.com/SiteQ8/field-manual.git
@@ -64,7 +64,7 @@ bash field-manual.sh
 
 ---
 
-## 📋 Requirements
+## Requirements
 
 | Dependency | Install |
 |-----------|---------|
@@ -81,9 +81,9 @@ bash field-manual.sh
 
 ---
 
-## 📚 What's Inside
+## What's Inside
 
-### 🔵 SiteQ8 Blue Team Tools
+### SiteQ8 Blue Team Tools
 
 Based on SiteQ8 Blue Team Tools by **Alan White & Ben Clark**
 
@@ -99,7 +99,7 @@ Based on SiteQ8 Blue Team Tools by **Alan White & Ben Clark**
 | **🧬 Forensics** | Volatility memory analysis, disk imaging, PCAP analysis, file carving |
 | **🔑 Event IDs** | 50+ key Windows Event IDs with descriptions and logon type codes |
 
-### 🔴 SiteQ8 Red Team Tools
+### SiteQ8 Red Team Tools
 
 Based on SiteQ8 Red Team Tools by **Ben Clark & Nick Downer**
 
@@ -117,19 +117,19 @@ Based on SiteQ8 Red Team Tools by **Ben Clark & Nick Downer**
 | **📜 Scripting** | PowerShell, Batch, Python, Bash, Scapy one-liners |
 | **💡 Tips** | Reverse shells (10 languages), TTY upgrade, exfiltration, LOLBins |
 
-### ✨ Features
+### Features
 
-- 🔍 **Global Search** — search across all Blue + Red Team commands by keyword
-- 📋 **Clipboard Copy** — press `y` to copy any page to clipboard
-- ⚡ **Quick Reference** — cheatsheet mode for fastest access
-- 🌐 **Ports Database** — common, healthcare, SCADA, IPv4, IPv6, TTL
-- 🔌 **Offline** — works completely offline, no internet required
-- 🚀 **Fast** — pure bash + dialog, launches instantly
-- 📦 **Zero config** — works out of the box after install
+- **Global Search**: search across all Blue + Red Team commands by keyword
+- **Clipboard Copy**: press `y` to copy any page to clipboard
+- **Quick Reference**: cheatsheet mode for fastest access
+- **Ports Database**: common, healthcare, SCADA, IPv4, IPv6, TTL
+- **Offline**: works completely offline, no internet required
+- **Fast**: pure bash + dialog, launches instantly
+- **Zero config**: works out of the box after install
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 field-manual/
@@ -184,7 +184,7 @@ field-manual/
 
 ---
 
-## ⌨️ Navigation
+## Navigation
 
 | Key | Action |
 |-----|--------|
@@ -198,7 +198,7 @@ field-manual/
 
 ---
 
-## 🔍 Search Usage
+## Search Usage
 
 ```bash
 field-manual
@@ -215,7 +215,7 @@ grep -ri 'sqlmap' ~/.local/share/field-manual/modules/
 
 ---
 
-## 🔧 Uninstall
+## Uninstall
 
 ```bash
 ./install.sh uninstall
@@ -223,7 +223,7 @@ grep -ri 'sqlmap' ~/.local/share/field-manual/modules/
 
 ---
 
-## ⚖️ Legal & Disclaimer
+## Legal & Disclaimer
 
 > **FOR EDUCATIONAL AND AUTHORIZED TESTING USE ONLY.**
 >
@@ -235,7 +235,7 @@ Content sourced from:
 
 ---
 
-## 👤 Author
+## Author
 
 **Ali AlEnezi**
 - GitHub: [@SiteQ8](https://github.com/SiteQ8)
@@ -243,7 +243,7 @@ Content sourced from:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Pull requests welcome! Please:
 1. Fork the repo
@@ -253,15 +253,9 @@ Pull requests welcome! Please:
 
 ---
 
-## ⭐ Star History
-
-If this tool saves you time during an engagement or helps you learn, please consider starring the repo!
-
----
-
 <div align="center">
 
-Made with ❤️ by Ali AlEnezi | [@SiteQ8](https://github.com/SiteQ8)
+By Ali AlEnezi | [@SiteQ8](https://github.com/SiteQ8)
 
 *Stay safe. Stay legal. 🛡️*
 
