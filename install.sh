@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — Field Manual Installer
+# install.sh: Field Manual Installer
 # Author: Ali AlEnezi <Site@hotmail.com>
 # GitHub: https://github.com/SiteQ8/field-manual
 

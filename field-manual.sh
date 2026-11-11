@@ -6,7 +6,7 @@
 #  ██╔══██╗   ██║   ██╔══╝  ██║╚██╔╝██║    ╚═╝
 #  ██║  ██║   ██║   ██║     ██║ ╚═╝ ██║    ██╗
 #  ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝     ╚═╝    ╚═╝
-#  Red & Blue Team Field Manual — Interactive TUI
+#  Red & Blue Team Field Manual: Interactive TUI
 # =============================================================================
 #  Author  : Ali AlEnezi <Site@hotmail.com>
 #  GitHub  : https://github.com/SiteQ8/field-manual

@@ -328,7 +328,7 @@ _red_win_persist() { show_page "Windows — Persistence Techniques" \
   DLL HIJACK (WptsExtensions — no reboot of svc needed)
     reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment\" /v PATH
     # Copy malicious.dll as WptsExtensions.dll to PATH dir
-    # Reboot — schedule service loads it"; }
+    # Reboot: schedule service loads it"; }
 
 _red_win_script() { show_page "Windows — PowerShell & Batch Scripting" \
 "═══════════════════════════════════════════════════════════════

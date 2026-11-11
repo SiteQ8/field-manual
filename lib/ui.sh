@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lib/ui.sh — dialog wrappers & display helpers
+# lib/ui.sh: dialog wrappers & display helpers
 
 backtitle() {
     echo "⚡ Field Manual v${VERSION}  |  Blue + Red Team  |  github.com/SiteQ8/field-manual  |  ESC = back"

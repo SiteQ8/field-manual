@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lib/search.sh — global full-text search across all module data files
+# lib/search.sh: global full-text search across all module data files
 
 global_search() {
     local query

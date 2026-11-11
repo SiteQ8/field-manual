@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lib/colors.sh — ANSI color constants
+# lib/colors.sh: ANSI color constants
 
 RED='\033[0;31m';  GRN='\033[0;32m'; YLW='\033[1;33m'
 BLU='\033[0;34m';  CYN='\033[0;36m'; MAG='\033[0;35m'

